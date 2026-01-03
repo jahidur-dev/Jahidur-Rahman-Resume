@@ -10,6 +10,32 @@ import { Project } from './app.models';
   imports: [CommonModule, AdminComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
+  styles: [`
+    :host {
+      display: block;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    .animate-slide-in-right {
+      animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.4s ease-out forwards;
+    }
+  `]
 })
 export class AppComponent {
   resumeService = inject(ResumeService);
@@ -24,6 +50,9 @@ export class AppComponent {
 
   currentYear = new Date().getFullYear();
   showAdmin = signal(false);
+  
+  // Mobile Menu State
+  mobileMenuOpen = signal(false);
   
   // Project Modal State
   selectedProject = signal<Project | null>(null);
@@ -56,7 +85,24 @@ export class AppComponent {
     this.showAdmin.update(v => !v);
   }
 
+  toggleMobileMenu() {
+    this.mobileMenuOpen.update(v => !v);
+    if (this.mobileMenuOpen()) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeMobileMenu() {
+    this.mobileMenuOpen.set(false);
+    document.body.style.overflow = '';
+  }
+
   scrollToSection(sectionId: string) {
+    // Close mobile menu if open
+    this.closeMobileMenu();
+
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
