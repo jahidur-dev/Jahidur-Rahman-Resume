@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy, inject, HostListener } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, inject, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResumeService } from './resume.service';
 import { AdminComponent } from './admin.component';
@@ -47,6 +47,10 @@ export class AppComponent {
   certifications = this.resumeService.certifications;
   skills = this.resumeService.skills;
   projects = this.resumeService.projects;
+
+  // Computed branding
+  firstName = computed(() => this.profile().name.split(' ')[0]);
+  initial = computed(() => this.profile().name.charAt(0).toUpperCase());
 
   currentYear = new Date().getFullYear();
   showAdmin = signal(false);
