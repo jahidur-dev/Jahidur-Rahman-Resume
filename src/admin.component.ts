@@ -1,3 +1,4 @@
+
 import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -422,12 +423,12 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div class="col-span-1 md:col-span-2 w-full group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Post Title</label>
-                                  <input [(ngModel)]="blog.title" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                  <input [ngModel]="blog.title" (ngModelChange)="updateBlogField(blog, 'title', $event)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                                 </div>
                                 <div class="w-full group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Category</label>
                                   <div class="relative">
-                                    <input [(ngModel)]="blog.category" list="blogCategoriesList" 
+                                    <input [ngModel]="blog.category" (ngModelChange)="updateBlogField(blog, 'category', $event)" list="blogCategoriesList" 
                                            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm" 
                                            placeholder="Select or type new category...">
                                     <datalist id="blogCategoriesList">
@@ -440,26 +441,26 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                                 </div>
                                 <div class="w-full group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Date</label>
-                                  <input [(ngModel)]="blog.date" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                  <input [ngModel]="blog.date" (ngModelChange)="updateBlogField(blog, 'date', $event)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                                 </div>
                                 <div class="w-full group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Read Time</label>
-                                  <input [(ngModel)]="blog.readTime" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                  <input [ngModel]="blog.readTime" (ngModelChange)="updateBlogField(blog, 'readTime', $event)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                                 </div>
                                 <div class="w-full group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image URL</label>
-                                  <input [(ngModel)]="blog.imageUrl" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                  <input [ngModel]="blog.imageUrl" (ngModelChange)="updateBlogField(blog, 'imageUrl', $event)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                                 </div>
                               </div>
 
                               <div class="space-y-6">
                                 <div class="w-full group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Excerpt (Card View)</label>
-                                  <textarea [(ngModel)]="blog.excerpt" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                                  <textarea [ngModel]="blog.excerpt" (ngModelChange)="updateBlogField(blog, 'excerpt', $event)" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
                                 </div>
                                 <div class="w-full group">
                                   <label class="block text-blue-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-300 transition-colors">Full Content</label>
-                                  <textarea [(ngModel)]="blog.content" rows="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm font-mono whitespace-pre-wrap"></textarea>
+                                  <textarea [ngModel]="blog.content" (ngModelChange)="updateBlogField(blog, 'content', $event)" rows="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm font-mono whitespace-pre-wrap"></textarea>
                                 </div>
                               </div>
                            </div>
@@ -739,6 +740,11 @@ export class AdminComponent {
     };
     this.resumeService.addBlog(newBlog);
     this.expandedId.set(newBlog.id);
+  }
+
+  updateBlogField(blog: BlogPost, field: keyof BlogPost, value: string) {
+    const updated = { ...blog, [field]: value };
+    this.resumeService.updateBlog(updated);
   }
 
   updateSkillCategory(category: keyof SkillSet, text: string) {

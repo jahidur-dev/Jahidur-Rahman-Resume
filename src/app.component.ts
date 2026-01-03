@@ -71,8 +71,9 @@ export class AppComponent {
   selectedCategory = signal<string>('All');
   
   blogCategories = computed(() => {
-    const allCats = this.blogs().map(b => b.category);
-    return ['All', ...new Set(allCats)];
+    const allCats = this.blogs().map(b => b.category).filter(Boolean);
+    const unique = Array.from(new Set(allCats)).sort();
+    return ['All', ...unique];
   });
 
   filteredBlogs = computed(() => {
