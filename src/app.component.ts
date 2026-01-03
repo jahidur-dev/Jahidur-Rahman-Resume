@@ -1,8 +1,9 @@
+
 import { Component, signal, ChangeDetectionStrategy, inject, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResumeService } from './resume.service';
 import { AdminComponent } from './admin.component';
-import { Project } from './app.models';
+import { Project, BlogPost } from './app.models';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +36,9 @@ import { Project } from './app.models';
     .animate-fade-in-up {
       animation: fadeInUp 0.4s ease-out forwards;
     }
+    .prose-content {
+      white-space: pre-wrap;
+    }
   `]
 })
 export class AppComponent {
@@ -47,6 +51,7 @@ export class AppComponent {
   certifications = this.resumeService.certifications;
   skills = this.resumeService.skills;
   projects = this.resumeService.projects;
+  blogs = this.resumeService.blogs;
 
   // Computed branding
   firstName = computed(() => this.profile().name.split(' ')[0]);
@@ -60,6 +65,22 @@ export class AppComponent {
   
   // Project Modal State
   selectedProject = signal<Project | null>(null);
+
+  // Blog State
+  selectedBlog = signal<BlogPost | null>(null);
+  selectedCategory = signal<string>('All');
+  
+  blogCategories = computed(() => {
+    const allCats = this.blogs().map(b => b.category);
+    return ['All', ...new Set(allCats)];
+  });
+
+  filteredBlogs = computed(() => {
+    if (this.selectedCategory() === 'All') {
+      return this.blogs();
+    }
+    return this.blogs().filter(b => b.category === this.selectedCategory());
+  });
 
   // Derived stats
   stats = signal([
@@ -121,5 +142,19 @@ export class AppComponent {
   closeProject() {
     this.selectedProject.set(null);
     document.body.style.overflow = '';
+  }
+
+  openBlog(blog: BlogPost) {
+    this.selectedBlog.set(blog);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeBlog() {
+    this.selectedBlog.set(null);
+    document.body.style.overflow = '';
+  }
+
+  setCategory(cat: string) {
+    this.selectedCategory.set(cat);
   }
 }

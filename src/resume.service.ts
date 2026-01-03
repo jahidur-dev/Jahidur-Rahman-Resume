@@ -1,5 +1,6 @@
+
 import { Injectable, signal, effect } from '@angular/core';
-import { AppData, Profile, Experience, Education, Certification, SkillSet, Project } from './app.models';
+import { AppData, Profile, Experience, Education, Certification, SkillSet, Project, BlogPost } from './app.models';
 
 const DEFAULT_DATA: AppData = {
   profile: {
@@ -165,6 +166,38 @@ const DEFAULT_DATA: AppData = {
         'Streamlined the vendor onboarding and offboarding process'
       ]
     }
+  ],
+  blogs: [
+    {
+      id: 'b1',
+      title: 'Why SQL is Still King in the Age of AI',
+      category: 'Technical',
+      date: 'Nov 15, 2024',
+      readTime: '5 min read',
+      imageUrl: 'https://picsum.photos/600/400?random=10',
+      excerpt: 'Despite the rise of LLMs and advanced ORMs, raw SQL remains the backbone of high-performance data analytics. Here is why.',
+      content: 'In the rapidly evolving landscape of data science, new tools emerge daily. However, Structured Query Language (SQL) has remained a constant force since the 1970s. \n\nWhy? Because data lives in relational databases. \n\nWhile AI can generate queries, understanding the underlying logic of joins, window functions, and CTEs is crucial for optimization. In this post, I explore how modern analysts can leverage SQL alongside AI tools to maximize efficiency rather than replacing it.'
+    },
+    {
+      id: 'b2',
+      title: 'Optimizing Supply Chains with Predictive Analytics',
+      category: 'Case Study',
+      date: 'Oct 02, 2024',
+      readTime: '8 min read',
+      imageUrl: 'https://picsum.photos/600/400?random=11',
+      excerpt: 'A deep dive into how we reduced perishable waste by 15% using time-series forecasting models.',
+      content: 'Supply chain management in the grocery sector is a race against time. Perishable goods have a limited shelf life, and overstocking leads to direct financial loss. \n\nWe implemented a Facebook Prophet model to account for seasonality and local holidays. By feeding historical sales data combined with weather APIs, we were able to predict demand with 85% accuracy. This shift from reactive to predictive ordering saved the company significant revenue in Q3.'
+    },
+    {
+      id: 'b3',
+      title: 'Leading Cross-Functional Data Teams',
+      category: 'Leadership',
+      date: 'Sep 20, 2024',
+      readTime: '4 min read',
+      imageUrl: 'https://picsum.photos/600/400?random=12',
+      excerpt: 'Moving from an individual contributor to a manager requires a shift in mindset. Here are my top 3 learnings.',
+      content: 'The transition from writing code to managing people who write code is challenging. \n\n1. Delegate, don\'t dictate: Trust your team to find the solution. \n2. Focus on the "Why": Engineers need to know the business impact of their work. \n3. Shield the team: Protect them from shifting priorities so they can focus on deep work.\n\nThese three pillars have helped me build a high-performing analytics unit.'
+    }
   ]
 };
 
@@ -176,6 +209,7 @@ export class ResumeService {
   certifications = signal<Certification[]>(DEFAULT_DATA.certifications);
   skills = signal<SkillSet>(DEFAULT_DATA.skills);
   projects = signal<Project[]>(DEFAULT_DATA.projects);
+  blogs = signal<BlogPost[]>(DEFAULT_DATA.blogs);
 
   constructor() {
     this.loadFromStorage();
@@ -188,7 +222,8 @@ export class ResumeService {
         education: this.education(),
         certifications: this.certifications(),
         skills: this.skills(),
-        projects: this.projects()
+        projects: this.projects(),
+        blogs: this.blogs()
       };
       try {
         localStorage.setItem('jahidur_portfolio_data', JSON.stringify(data));
@@ -209,6 +244,7 @@ export class ResumeService {
         this.certifications.set(data.certifications || []);
         this.skills.set(data.skills || DEFAULT_DATA.skills);
         this.projects.set(data.projects || []);
+        this.blogs.set(data.blogs || DEFAULT_DATA.blogs);
       }
     } catch (e) {
       console.error('Error loading from localStorage', e);
@@ -243,6 +279,19 @@ export class ResumeService {
   
   deleteProject(id: string) {
     this.projects.update(list => list.filter(p => p.id !== id));
+  }
+
+  // Blogs
+  addBlog(blog: BlogPost) {
+    this.blogs.update(list => [blog, ...list]);
+  }
+
+  updateBlog(updated: BlogPost) {
+    this.blogs.update(list => list.map(b => b.id === updated.id ? updated : b));
+  }
+
+  deleteBlog(id: string) {
+    this.blogs.update(list => list.filter(b => b.id !== id));
   }
 
   // Skills

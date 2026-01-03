@@ -1,3 +1,4 @@
+
 export interface Profile {
   name: string;
   title: string;
@@ -47,6 +48,17 @@ export interface Project {
   results?: string[];
 }
 
+export interface BlogPost {
+  id: string;
+  title: string;
+  category: string;
+  date: string;
+  readTime: string;
+  imageUrl?: string;
+  excerpt: string;
+  content: string;
+}
+
 export interface SkillSet {
   technical: string[];
   analytical: string[];
@@ -60,4 +72,5 @@ export interface AppData {
   certifications: Certification[];
   skills: SkillSet;
   projects: Project[];
+  blogs: BlogPost[];
 }

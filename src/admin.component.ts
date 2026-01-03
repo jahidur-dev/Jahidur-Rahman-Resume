@@ -1,8 +1,8 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResumeService } from './resume.service';
-import { Experience, Profile, Project, SkillSet } from './app.models';
+import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
 
 @Component({
   selector: 'app-admin',
@@ -87,6 +87,9 @@ import { Experience, Profile, Project, SkillSet } from './app.models';
                     }
                     @case ('projects') {
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                    }
+                    @case ('blog') {
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     }
                     @case ('skills') {
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
@@ -366,6 +369,107 @@ import { Experience, Profile, Project, SkillSet } from './app.models';
                 </div>
               }
 
+              <!-- Blog Tab -->
+              @if (activeTab() === 'blog') {
+                <div class="space-y-6 animate-fade-in">
+                   <div class="flex justify-between items-center">
+                    <div>
+                      <h2 class="text-2xl font-bold text-white">Blog Posts</h2>
+                      <p class="text-slate-400 text-sm mt-1">Share your thoughts and insights.</p>
+                    </div>
+                    <button (click)="addNewBlog()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-lg shadow-blue-900/20">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                      Add Post
+                    </button>
+                  </div>
+
+                  <div class="grid grid-cols-1 gap-6">
+                    @for (blog of resumeService.blogs(); track blog.id) {
+                      <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden transition-all duration-200"
+                           [class.ring-2]="expandedId() === blog.id" [class.ring-blue-600]="expandedId() === blog.id">
+                        
+                        <!-- Header -->
+                         <div class="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-800/50 transition-colors select-none"
+                             (click)="toggleExpand(blog.id)">
+                           <div class="flex items-center gap-4">
+                             <div class="w-16 h-10 rounded bg-slate-800 overflow-hidden border border-slate-700 relative">
+                               @if (blog.imageUrl) {
+                                 <img [src]="blog.imageUrl" class="w-full h-full object-cover opacity-75">
+                               } @else {
+                                 <div class="w-full h-full flex items-center justify-center text-xs text-slate-500">No Img</div>
+                               }
+                             </div>
+                             <div>
+                               <h3 class="font-bold text-white">{{ blog.title }}</h3>
+                               <p class="text-xs text-slate-500">{{ blog.category }} &bull; {{ blog.date }}</p>
+                             </div>
+                           </div>
+                           <div class="flex items-center gap-2">
+                             @if (expandedId() === blog.id) {
+                               <button (click)="resumeService.deleteBlog(blog.id); $event.stopPropagation()" class="text-red-500 hover:bg-red-900/30 p-2 rounded transition-colors mr-2">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                               </button>
+                             }
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 transform transition-transform" [class.rotate-180]="expandedId() === blog.id" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                             </svg>
+                           </div>
+                         </div>
+
+                         <!-- Content -->
+                         @if (expandedId() === blog.id) {
+                           <div class="p-6 border-t border-slate-800 bg-slate-900/50 animate-fade-in-down">
+                              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div class="col-span-1 md:col-span-2 w-full group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Post Title</label>
+                                  <input [(ngModel)]="blog.title" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                </div>
+                                <div class="w-full group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Category</label>
+                                  <div class="relative">
+                                    <input [(ngModel)]="blog.category" list="blogCategoriesList" 
+                                           class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm" 
+                                           placeholder="Select or type new category...">
+                                    <datalist id="blogCategoriesList">
+                                       @for (cat of uniqueCategories(); track cat) {
+                                         <option [value]="cat"></option>
+                                       }
+                                    </datalist>
+                                  </div>
+                                  <p class="text-xs text-slate-500 mt-1">Type a new name to create a new category.</p>
+                                </div>
+                                <div class="w-full group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Date</label>
+                                  <input [(ngModel)]="blog.date" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                </div>
+                                <div class="w-full group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Read Time</label>
+                                  <input [(ngModel)]="blog.readTime" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                </div>
+                                <div class="w-full group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image URL</label>
+                                  <input [(ngModel)]="blog.imageUrl" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                </div>
+                              </div>
+
+                              <div class="space-y-6">
+                                <div class="w-full group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Excerpt (Card View)</label>
+                                  <textarea [(ngModel)]="blog.excerpt" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                                </div>
+                                <div class="w-full group">
+                                  <label class="block text-blue-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-300 transition-colors">Full Content</label>
+                                  <textarea [(ngModel)]="blog.content" rows="12" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm font-mono whitespace-pre-wrap"></textarea>
+                                </div>
+                              </div>
+                           </div>
+                         }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
               <!-- Skills Tab -->
               @if (activeTab() === 'skills') {
                 <div class="space-y-6 animate-fade-in">
@@ -486,12 +590,18 @@ export class AdminComponent {
   loginError = signal(false);
   passwordInput = '';
   
-  activeTab = signal<'profile' | 'experience' | 'projects' | 'skills' | 'settings'>('profile');
-  tabs = ['profile', 'experience', 'projects', 'skills', 'settings'];
+  activeTab = signal<'profile' | 'experience' | 'projects' | 'blog' | 'skills' | 'settings'>('profile');
+  tabs = ['profile', 'experience', 'projects', 'blog', 'skills', 'settings'];
   
   expandedId = signal<string | null>(null);
 
   localProfile: Profile = { ...this.resumeService.profile() };
+
+  // Computed signal for unique blog categories to populate the datalist
+  uniqueCategories = computed(() => {
+    const categories = new Set(this.resumeService.blogs().map(b => b.category).filter(c => !!c));
+    return Array.from(categories).sort();
+  });
 
   closeAdmin() {
     const event = new CustomEvent('closeAdmin');
@@ -615,6 +725,20 @@ export class AdminComponent {
     };
     this.resumeService.addProject(newProj);
     this.expandedId.set(newProj.id); // Auto expand
+  }
+
+  addNewBlog() {
+    const newBlog: BlogPost = {
+      id: Date.now().toString(),
+      title: 'New Blog Post',
+      category: 'General',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      readTime: '5 min read',
+      excerpt: 'Brief summary of the post...',
+      content: 'Write your full content here...'
+    };
+    this.resumeService.addBlog(newBlog);
+    this.expandedId.set(newBlog.id);
   }
 
   updateSkillCategory(category: keyof SkillSet, text: string) {
