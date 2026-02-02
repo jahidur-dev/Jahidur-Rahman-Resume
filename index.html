@@ -27,6 +27,31 @@
         margin-left: -1px;
       }
     }
+    
+    /* Print Styles for Save-as-PDF functionality */
+    @media print {
+      nav, button, .no-print {
+        display: none !important;
+      }
+      body {
+        background: white;
+        color: black;
+      }
+      section {
+        break-inside: avoid;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+      }
+      a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+      }
+      /* Hide decorative blobs in print */
+      .animate-blob {
+        display: none;
+      }
+    }
   </style>
 <script type="importmap">
 {
@@ -41,7 +66,8 @@
     "@angular/platform-browser": "https://esm.sh/@angular/platform-browser@^21.0.6?external=rxjs",
     "@angular/core": "https://esm.sh/@angular/core@^21.0.6?external=rxjs",
     "@angular/common": "https://esm.sh/@angular/common@^21.0.6?external=rxjs",
-    "@angular/forms": "https://esm.sh/@angular/forms@^21.0.6?external=rxjs"
+    "@angular/forms": "https://esm.sh/@angular/forms@^21.0.6?external=rxjs",
+    "@angular/common/http": "https://esm.sh/@angular/common@^21.0.6/http?external=rxjs"
   }
 }
 </script>

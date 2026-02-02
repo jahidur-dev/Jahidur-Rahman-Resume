@@ -1,5 +1,5 @@
 
-import { Component, signal, ChangeDetectionStrategy, inject, HostListener, computed, OnInit } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResumeService } from './resume.service';
 import { AdminComponent } from './admin.component';
@@ -11,6 +11,9 @@ import { Project, BlogPost } from './app.models';
   imports: [CommonModule, AdminComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
+  host: {
+    '(window:keydown.control.period)': 'onAdminShortcut($event)'
+  },
   styles: [`
     :host {
       display: block;
@@ -29,6 +32,13 @@ import { Project, BlogPost } from './app.models';
     }
     .animate-fade-in {
       animation: fadeIn 0.3s ease-out forwards;
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    .animate-fade-out {
+      animation: fadeOut 0.3s ease-in forwards;
     }
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -123,6 +133,7 @@ export class AppComponent implements OnInit {
   
   // Mobile Menu State
   mobileMenuOpen = signal(false);
+  closingMenu = signal(false);
   
   // Project Modal State
   selectedProject = signal<Project | null>(null);
@@ -193,8 +204,6 @@ export class AppComponent implements OnInit {
     }, intervalTime);
   }
 
-  // Keyboard shortcut to toggle admin: Ctrl + .
-  @HostListener('window:keydown.control.period', ['$event'])
   onAdminShortcut(event: KeyboardEvent) {
     event.preventDefault();
     this.toggleAdmin();
@@ -205,27 +214,42 @@ export class AppComponent implements OnInit {
   }
 
   toggleMobileMenu() {
-    this.mobileMenuOpen.update(v => !v);
     if (this.mobileMenuOpen()) {
-      document.body.style.overflow = 'hidden';
+      this.closeMobileMenu();
     } else {
-      document.body.style.overflow = '';
+      this.mobileMenuOpen.set(true);
+      document.body.style.overflow = 'hidden';
     }
   }
 
   closeMobileMenu() {
-    this.mobileMenuOpen.set(false);
-    document.body.style.overflow = '';
+    if (this.mobileMenuOpen()) {
+      this.closingMenu.set(true);
+      setTimeout(() => {
+        this.mobileMenuOpen.set(false);
+        this.closingMenu.set(false);
+        document.body.style.overflow = '';
+      }, 300); // Matches fadeOut animation duration
+    }
   }
 
   scrollToSection(sectionId: string) {
     // Close mobile menu if open
     this.closeMobileMenu();
 
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const headerOffset = 80;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   }
 
   openProject(project: Project) {
@@ -250,5 +274,11 @@ export class AppComponent implements OnInit {
 
   setCategory(cat: string) {
     this.selectedCategory.set(cat);
+  }
+
+  printResume() {
+    if (typeof window !== 'undefined') {
+      window.print();
+    }
   }
 }
