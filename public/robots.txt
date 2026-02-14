@@ -1,0 +1,6 @@
+
+User-agent: *
+Allow: /
+
+# Sitemap location (Update domain when live)
+# Sitemap: https://yourdomain.com/sitemap.xml

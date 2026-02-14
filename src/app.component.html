@@ -29,103 +29,124 @@
   <app-admin />
 }
 
-<!-- Project Detail Modal -->
+<!-- Project Detail PAGE (Full Screen) -->
 @if (selectedProject(); as proj) {
-  <div class="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+  <div class="fixed inset-0 z-[60] overflow-y-auto bg-white animate-fade-in" role="dialog" aria-modal="true">
+    
+    <!-- Top Navigation Bar for Details Page -->
+    <div class="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <button (click)="closeProject()" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Portfolio
+      </button>
+      <span class="font-bold text-slate-900 text-sm hidden sm:block">Project Details</span>
+    </div>
+
+    <!-- Content Container -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       
-      <!-- Background overlay -->
-      <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity animate-fade-in" aria-hidden="true" (click)="closeProject()"></div>
-
-      <!-- Modal Panel -->
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full animate-fade-in-up">
-        
-        <!-- Modal Content -->
-        <div class="bg-white">
-          <!-- Header Image area -->
-          <div class="h-48 sm:h-64 overflow-hidden relative bg-slate-100">
-             @if (proj.imageUrl) {
-               <img [src]="proj.imageUrl" class="w-full h-full object-cover">
+      <!-- Header -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-bold tracking-wide uppercase">Case Study</span>
+             @if (proj.role) {
+               <span class="text-slate-500 text-sm font-medium">Role: {{ proj.role }}</span>
              }
-             <button (click)="closeProject()" class="absolute top-4 right-4 bg-white/90 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-colors z-10">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-               </svg>
-             </button>
+          </div>
+          
+          <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight">{{ proj.title }}</h1>
+          
+          <div class="flex flex-wrap gap-2">
+             @for (tech of proj.technologies; track tech) {
+               <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium border border-slate-200">{{ tech }}</span>
+             }
           </div>
 
-          <div class="p-8">
-            <div class="mb-6">
-               <div class="flex justify-between items-start">
-                 <h2 class="text-3xl font-bold text-slate-900 mb-2">{{ proj.title }}</h2>
+          <p class="text-xl text-slate-600 leading-relaxed">{{ proj.description }}</p>
+          
+          @if (proj.link && proj.link !== '#') {
+            <a [href]="proj.link" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20">
+              Visit Live Project
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          }
+        </div>
+
+        <!-- Hero Image -->
+        <div class="relative h-80 lg:h-auto rounded-2xl overflow-hidden shadow-2xl">
+          @if (proj.imageUrl) {
+            <img [src]="proj.imageUrl" class="w-full h-full object-cover">
+          } @else {
+            <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+              <span class="text-slate-400">No Image Available</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Deep Dive Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 border-t border-slate-200 pt-16">
+        
+        <!-- Challenge -->
+        <div class="lg:col-span-2 space-y-12">
+           @if (proj.challenge) {
+             <section>
+               <h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                 <div class="p-2 bg-red-100 text-red-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                 </div>
+                 The Challenge
+               </h3>
+               <div class="prose prose-lg prose-slate text-slate-600">
+                 <p>{{ proj.challenge }}</p>
                </div>
-               @if (proj.role) {
-                 <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                   Role: {{ proj.role }}
-                 </div>
-               }
-            </div>
+             </section>
+           }
 
-            <!-- Tags -->
-            <div class="flex flex-wrap gap-2 mb-8 border-b border-slate-100 pb-8">
-               @for (tech of proj.technologies; track tech) {
-                 <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium">{{ tech }}</span>
-               }
-            </div>
-
-            <div class="space-y-8">
-               <!-- Challenge -->
-               @if (proj.challenge) {
-                 <div>
-                   <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-                     <span class="p-1.5 bg-red-100 text-red-600 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                     </span>
-                     The Challenge
-                   </h3>
-                   <p class="text-slate-600 leading-relaxed">{{ proj.challenge }}</p>
+           @if (proj.solution) {
+             <section>
+               <h3 class="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                 <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
                  </div>
-               }
+                 The Solution
+               </h3>
+               <div class="prose prose-lg prose-slate text-slate-600">
+                 <p>{{ proj.solution }}</p>
+               </div>
+             </section>
+           }
+        </div>
 
-               <!-- Solution -->
-               @if (proj.solution) {
-                 <div>
-                   <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center gap-2">
-                     <span class="p-1.5 bg-blue-100 text-blue-600 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                     </span>
-                     The Solution
-                   </h3>
-                   <p class="text-slate-600 leading-relaxed">{{ proj.solution }}</p>
-                 </div>
-               }
-
-               <!-- Results -->
-               @if (proj.results && proj.results.length > 0) {
-                 <div class="bg-emerald-50 rounded-xl p-6 border border-emerald-100">
-                   <h3 class="text-lg font-bold text-emerald-900 mb-4 flex items-center gap-2">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                     </svg>
-                     Key Outcomes
-                   </h3>
-                   <ul class="space-y-3">
-                     @for (result of proj.results; track result) {
-                       <li class="flex items-start gap-3 text-emerald-800">
-                         <span class="mt-1.5 w-1.5 h-1.5 bg-emerald-500 rounded-full flex-shrink-0"></span>
-                         {{ result }}
-                       </li>
-                     }
-                   </ul>
-                 </div>
-               }
-            </div>
-          </div>
+        <!-- Results Sidebar -->
+        <div class="lg:col-span-1">
+           @if (proj.results && proj.results.length > 0) {
+             <div class="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 sticky top-24">
+               <h3 class="text-xl font-bold text-emerald-900 mb-6 flex items-center gap-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                 </svg>
+                 Key Outcomes
+               </h3>
+               <ul class="space-y-4">
+                 @for (result of proj.results; track result) {
+                   <li class="flex items-start gap-3 text-emerald-800 font-medium">
+                     <span class="mt-1.5 w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0"></span>
+                     {{ result }}
+                   </li>
+                 }
+               </ul>
+             </div>
+           }
         </div>
 
       </div>
@@ -133,62 +154,62 @@
   </div>
 }
 
-<!-- Blog Reading Modal -->
+<!-- Insights (Blog) Reading PAGE (Full Screen) -->
 @if (selectedBlog(); as blog) {
-  <div class="fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-      
-      <!-- Background overlay -->
-      <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity animate-fade-in" aria-hidden="true" (click)="closeBlog()"></div>
+  <div class="fixed inset-0 z-[60] overflow-y-auto bg-white animate-fade-in" role="dialog" aria-modal="true">
+    
+    <!-- Top Nav -->
+    <div class="absolute top-0 left-0 right-0 z-10 flex justify-between items-center p-4 sm:p-6 lg:p-8">
+       <button (click)="closeBlog()" class="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full hover:bg-white/20 transition-colors font-medium text-sm">
+         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+         </svg>
+         All Insights
+       </button>
+    </div>
 
-      <!-- Modal Panel -->
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-      <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full animate-fade-in-up">
-        
-        <!-- Modal Content -->
-        <div class="bg-white">
-           <!-- Header Image -->
-          <div class="h-56 sm:h-80 overflow-hidden relative bg-slate-900">
-             @if (blog.imageUrl) {
-               <img [src]="blog.imageUrl" class="w-full h-full object-cover opacity-80">
-             }
-             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
-             
-             <button (click)="closeBlog()" class="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md p-2 rounded-full text-white transition-colors z-10">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    <!-- Header Image with Overlay -->
+    <div class="h-[60vh] w-full relative bg-slate-900">
+       @if (blog.imageUrl) {
+         <img [src]="blog.imageUrl" class="w-full h-full object-cover opacity-60">
+       }
+       <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+       
+       <div class="absolute bottom-0 left-0 w-full p-6 sm:p-12 lg:p-16 max-w-5xl mx-auto">
+          <div class="flex items-center gap-4 mb-6">
+             <span class="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-lg shadow-blue-900/50">{{ blog.category }}</span>
+             <span class="text-slate-300 font-medium flex items-center gap-2">
+               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                </svg>
-             </button>
-
-             <div class="absolute bottom-0 left-0 p-8 w-full">
-                <div class="flex items-center gap-3 mb-3">
-                   <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold uppercase tracking-wider rounded-full">{{ blog.category }}</span>
-                   <span class="text-slate-300 text-sm font-medium">{{ blog.readTime }}</span>
-                </div>
-                <h1 class="text-3xl sm:text-4xl font-bold text-white leading-tight mb-2">{{ blog.title }}</h1>
-                <p class="text-slate-300 text-sm">{{ blog.date }}</p>
-             </div>
+               {{ blog.readTime }}
+             </span>
           </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4 drop-shadow-sm">{{ blog.title }}</h1>
+          <p class="text-slate-300 text-lg sm:text-xl">{{ blog.date }}</p>
+       </div>
+    </div>
 
-          <div class="p-8 sm:p-12">
-            <!-- Article Content -->
-            <div class="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed whitespace-pre-wrap">
-               {{ blog.content }}
-            </div>
+    <!-- Article Content -->
+    <div class="max-w-3xl mx-auto px-6 py-16">
+      <!-- Intro / Excerpt -->
+      <div class="text-xl sm:text-2xl text-slate-500 font-serif leading-relaxed mb-12 border-l-4 border-blue-500 pl-6 italic">
+         {{ blog.excerpt }}
+      </div>
 
-            <!-- Author Footer -->
-            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center gap-4">
-               <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
-                  {{ initial() }}
-               </div>
-               <div>
-                  <div class="font-bold text-slate-900">{{ profile().name }}</div>
-                  <div class="text-sm text-slate-500">{{ profile().title }}</div>
-               </div>
-            </div>
-          </div>
-        </div>
+      <!-- Main Body (Rich Text Support) -->
+      <div class="prose prose-lg prose-slate prose-blue max-w-none text-slate-700 leading-8" [innerHTML]="blog.content"></div>
 
+      <!-- Author Footer -->
+      <div class="mt-20 pt-10 border-t border-slate-200 flex items-center gap-6">
+         <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-blue-600 font-bold text-2xl border-4 border-white shadow-lg">
+            {{ initial() }}
+         </div>
+         <div>
+            <div class="text-sm text-slate-500 uppercase tracking-widest font-bold mb-1">Written By</div>
+            <div class="font-bold text-slate-900 text-lg">{{ profile().name }}</div>
+            <div class="text-slate-500">{{ profile().title }}</div>
+         </div>
       </div>
     </div>
   </div>
@@ -209,7 +230,7 @@
       <div class="hidden md:flex space-x-8">
         <button (click)="scrollToSection('about')" class="text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors">About</button>
         <button (click)="scrollToSection('projects')" class="text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors">Portfolio</button>
-        <button (click)="scrollToSection('blog')" class="text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors">Blog</button>
+        <button (click)="scrollToSection('blog')" class="text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors">Insights</button>
         <button (click)="scrollToSection('experience')" class="text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors">Experience</button>
         <button (click)="scrollToSection('skills')" class="text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors">Skills</button>
         <button (click)="scrollToSection('contact')" class="px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-full hover:bg-slate-800 transition-colors">Contact</button>
@@ -228,7 +249,7 @@
   </div>
 </nav>
 
-<!-- Mobile Full Screen Menu Overlay (Fixed on top of EVERYTHING) -->
+<!-- Mobile Full Screen Menu Overlay -->
 @if (mobileMenuOpen()) {
   <div class="fixed inset-0 z-[100] bg-slate-900 text-white flex flex-col"
        [class.animate-fade-in]="!closingMenu()"
@@ -254,7 +275,7 @@
           <button (click)="scrollToSection('hero')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 0ms">Home</button>
           <button (click)="scrollToSection('about')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 50ms">About</button>
           <button (click)="scrollToSection('projects')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 100ms">Portfolio</button>
-          <button (click)="scrollToSection('blog')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 125ms">Blog</button>
+          <button (click)="scrollToSection('blog')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 125ms">Insights</button>
           <button (click)="scrollToSection('experience')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 150ms">Experience</button>
           <button (click)="scrollToSection('skills')" class="text-3xl font-bold hover:text-blue-400 transition-colors tracking-tight animate-fade-in-up" style="animation-delay: 200ms">Skills</button>
        </div>
@@ -419,7 +440,7 @@
   </div>
 </section>
 
-<!-- BLOG SECTION (New) -->
+<!-- INSIGHTS SECTION (Renamed from Blog) -->
 <section id="blog" class="py-24 bg-slate-50 border-t border-slate-100">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12">
