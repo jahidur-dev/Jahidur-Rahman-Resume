@@ -1,32 +1,38 @@
+
 {
-  "name": "jahidur-rahman-portfolio",
+  "name": "jahidur-portfolio",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
+    "ng": "ng",
     "dev": "ng serve",
+    "prestart": "ng build",
+    "start": "node server.js",
     "build": "ng build",
-    "preview": "ng serve --configuration=production"
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
   },
   "dependencies": {
-    "rxjs": "^7.8.2",
-    "@angular/compiler": "^21.0.0",
-    "@angular/platform-browser": "^21.0.0",
-    "@angular/core": "^21.0.0",
-    "@angular/common": "^21.0.0",
-    "@angular/forms": "^21.0.6",
-    "path": "^0.12.7",
-    "fs": "^0.0.1-security",
-    "http": "^0.0.1-security",
-    "url": "^0.11.4",
-    "@angular/build": "^21.0.0",
-    "@angular/cli": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
-    "tailwindcss": "latest"
+    "@angular/animations": "^19.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.0",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/router": "^19.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@angular-devkit/build-angular": "^19.0.0",
+    "@angular/cli": "^19.0.0",
+    "@angular/compiler-cli": "^19.0.0",
+    "@types/node": "^18.18.0",
+    "typescript": "~5.6.2"
+  },
+  "engines": {
+    "node": ">=18.13.0",
+    "npm": ">=8.0.0"
   }
 }

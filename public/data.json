@@ -1,3 +1,4 @@
+
 {
   "profile": {
     "name": "Jahidur Rahman",
@@ -132,34 +133,34 @@
     },
     {
       "id": "p2",
-      "title": "RFMPA Customer Segmentation",
-      "description": "An advanced segmentation framework classifying 1M+ users based on purchasing behavior.",
-      "technologies": ["SQL", "PowerBI", "Statistics"],
+      "title": "RFMPA Customer Segmentation Engine",
+      "description": "A high-impact customer clustering framework analyzing 1M+ user behaviors to drive hyper-personalized marketing and retention strategies.",
+      "technologies": ["SQL", "PowerBI", "Python", "Statistics"],
       "link": "#",
       "imageUrl": "https://picsum.photos/600/400?random=2",
       "role": "Senior Data Analyst",
-      "challenge": "Marketing campaigns were generic and had low conversion rates because the customer base of 1M+ users was treated as a monolith.",
-      "solution": "Designed and deployed an RFMPA (Recency, Frequency, Monetary, Profit, Average Basket) segmentation framework to cluster users into actionable groups like \"Champions\", \"At-Risk\", and \"Price Sensitive\".",
+      "challenge": "Marketing efforts were inefficient due to a 'one-size-fits-all' approach. With 1M+ users treated as a monolith, campaign engagement was low, and high-value churn was going undetected.",
+      "solution": "Engineered a comprehensive RFMPA (Recency, Frequency, Monetary, Profitability, Avg Basket) model using SQL and Python. This segmented the user base into actionable clusters such as \"Champions\", \"Hibernating\", and \"Bargain Hunters\", enabling precise targeting.",
       "results": [
-        "Increased email marketing open rates by 25%",
-        "Improved campaign ROI by 18% through targeted offers",
-        "Identified and reactivated 5,000+ dormant high-value customers"
+        "Achieved a 25% increase in campaign conversion rates via personalized targeting",
+        "Reactivated 5,000+ dormant high-value customers, generating significant incremental revenue",
+        "Reduced discount spend by 15% by suppressing offers to price-insensitive segments"
       ]
     },
     {
       "id": "p3",
-      "title": "Automated Vendor Scoring System",
-      "description": "A real-time scoring system to evaluate vendor performance based on multiple KPIs.",
-      "technologies": ["SQL", "Python", "Airflow"],
+      "title": "Automated Vendor Performance System",
+      "description": "An automated, data-driven evaluation system transforming procurement by ranking 500+ vendors on real-time operational KPIs.",
+      "technologies": ["SQL", "Python", "Airflow", "Data Warehousing"],
       "link": "#",
       "imageUrl": "https://picsum.photos/600/400?random=3",
       "role": "Data Analyst",
-      "challenge": "Procurement teams lacked visibility into vendor performance, leading to reliance on underperforming suppliers and inconsistent pricing.",
-      "solution": "Built an automated scoring pipeline that graded vendors daily on Fill Rate, Delivery Speed, Price Consistency, and Quality Return Rate.",
+      "challenge": "The procurement department lacked visibility into supplier performance, leading to reliance on gut feeling, frequent stockouts, and an inability to negotiate better terms with underperforming vendors.",
+      "solution": "Built a robust ETL pipeline (Airflow & SQL) to calculate daily vendor scores based on Fill Rate, Delivery Speed, Price Stability, and Quality. Created live dashboards to flag non-compliant vendors immediately.",
       "results": [
-        "Improved overall vendor fill rate from 82% to 94%",
-        "Enabled data-driven negotiation, saving 3% on annual procurement costs",
-        "Streamlined the vendor onboarding and offboarding process"
+        "Drove overall vendor fill rates from 82% to 94%, ensuring consistent product availability",
+        "Empowered the commercial team to negotiate 3% cost savings by leveraging performance data",
+        "Reduced manual vendor assessment time by 90%, allowing buyers to focus on strategic sourcing"
       ]
     }
   ],
