@@ -1,13 +1,16 @@
-
 {
   "profile": {
     "name": "Jahidur Rahman",
-    "title": "Manager of Analytics | Data Science Professional",
+    "title": "Web Developer & Data Analyst",
+    "tagline": "I turn data into insights and ideas into web experiences.",
     "email": "jahidur.dev@gmail.com",
     "phone": "+880 1992 547279",
     "linkedin": "linkedin.com/in/jahidur-dev",
+    "github": "jahidur-dev",
+    "kaggle": "jahidur-dev",
     "location": "Dhaka, Bangladesh",
-    "summary": "Analytical and detail-oriented Data Analytics Professional with 5+ years of progressive experience at Chaldal PLC, growing from Jr. Data Analyst to Manager of Analytics. Expertise in SQL, statistical modeling, Python-based automation, and dashboard development. Proven ability to transform raw data into actionable insights that drive revenue growth and operational efficiency."
+    "summary": "Analytical and detail-oriented Data Analytics Professional with 5+ years of progressive experience. Expertise in SQL, statistical modeling, Python-based automation, and dashboard development. Proven ability to transform raw data into actionable insights that drive revenue growth and operational efficiency.",
+    "currentlyLearning": "Advanced Deep Learning with PyTorch & System Design for Scalable Web Apps"
   },
   "experiences": [
     {
@@ -89,38 +92,26 @@
     }
   ],
   "skills": {
-    "technical": [
-      "SQL (Advanced)",
-      "Python (Pandas, NumPy)",
-      "Data Visualization",
-      "Statistical Analysis",
-      "PowerBI / Tableau",
-      "Excel (Advanced)",
-      "HTML / CSS / JS"
-    ],
-    "analytical": [
-      "Predictive Modeling",
-      "Customer Segmentation",
-      "RFM Analysis",
-      "Supply Chain Optimization",
-      "Forecasting",
-      "A/B Testing Concepts"
-    ],
-    "soft": [
-      "Team Leadership",
-      "Strategic Planning",
-      "Stakeholder Management",
-      "Technical Mentorship",
-      "Cross-functional Communication"
-    ]
+    "development": {
+      "frontend": ["HTML", "CSS", "JavaScript", "TypeScript", "Angular", "Tailwind CSS", "React", "Next.js", "Vue"],
+      "backend": ["Node.js", "Express", "PHP", "Django", "Laravel"],
+      "tools": ["Git", "VS Code", "Docker", "Postman", "CI/CD"]
+    },
+    "data": {
+      "languages": ["Python (Pandas, NumPy)", "SQL (Advanced)", "R"],
+      "visualization": ["PowerBI", "Tableau", "Matplotlib", "Seaborn"],
+      "analysis": ["Machine Learning (Scikit-learn)", "Data Cleaning", "ETL", "Forecasting"]
+    }
   },
   "projects": [
     {
       "id": "p1",
       "title": "Dynamic Purchase Prediction Model",
+      "type": "data",
       "description": "A machine learning model designed to predict daily inventory needs for 10-minute delivery hubs.",
       "technologies": ["Python", "Scikit-Learn", "SQL", "Prophet"],
       "link": "#",
+      "repoLink": "https://github.com/jahidur-dev/purchase-prediction",
       "imageUrl": "https://picsum.photos/600/400?random=1",
       "role": "Lead Data Scientist",
       "challenge": "The company faced excessive waste (15%) and frequent stockouts due to a static, manual ordering process that failed to account for daily demand fluctuations.",
@@ -129,11 +120,14 @@
         "Reduced perishable waste by 15% within 3 months",
         "Lowered stockout rates by 20%, improving customer satisfaction",
         "Automated 90% of daily ordering, freeing up 20+ hours/week for the supply chain team"
-      ]
+      ],
+      "datasetDetails": "Historical sales data (2 years), Weather API data, Holiday calendar",
+      "techniquesUsed": ["Time Series Forecasting", "Regression", "Data Cleaning"]
     },
     {
       "id": "p2",
       "title": "RFMPA Customer Segmentation Engine",
+      "type": "data",
       "description": "A high-impact customer clustering framework analyzing 1M+ user behaviors to drive hyper-personalized marketing and retention strategies.",
       "technologies": ["SQL", "PowerBI", "Python", "Statistics"],
       "link": "#",
@@ -145,11 +139,14 @@
         "Achieved a 25% increase in campaign conversion rates via personalized targeting",
         "Reactivated 5,000+ dormant high-value customers, generating significant incremental revenue",
         "Reduced discount spend by 15% by suppressing offers to price-insensitive segments"
-      ]
+      ],
+      "datasetDetails": "1M+ Customer Transaction Records",
+      "techniquesUsed": ["Clustering (K-Means)", "RFM Analysis", "SQL Window Functions"]
     },
     {
       "id": "p3",
       "title": "Automated Vendor Performance System",
+      "type": "data",
       "description": "An automated, data-driven evaluation system transforming procurement by ranking 500+ vendors on real-time operational KPIs.",
       "technologies": ["SQL", "Python", "Airflow", "Data Warehousing"],
       "link": "#",
@@ -161,7 +158,23 @@
         "Drove overall vendor fill rates from 82% to 94%, ensuring consistent product availability",
         "Empowered the commercial team to negotiate 3% cost savings by leveraging performance data",
         "Reduced manual vendor assessment time by 90%, allowing buyers to focus on strategic sourcing"
-      ]
+      ],
+      "datasetDetails": "Vendor Delivery Logs, Quality Check Reports",
+      "techniquesUsed": ["ETL Pipeline", "Data Warehousing", "Automated Reporting"]
+    },
+    {
+      "id": "p4",
+      "title": "E-Commerce Analytics Dashboard",
+      "type": "web",
+      "description": "A full-stack analytics dashboard for e-commerce store owners to visualize sales, traffic, and user behavior.",
+      "technologies": ["Angular", "Node.js", "Chart.js", "Tailwind CSS"],
+      "link": "#",
+      "repoLink": "https://github.com/jahidur-dev/ecommerce-dashboard",
+      "imageUrl": "https://picsum.photos/600/400?random=4",
+      "role": "Full Stack Developer",
+      "challenge": "Store owners needed a real-time view of their business metrics without navigating complex database tools.",
+      "solution": "Built a responsive dashboard using Angular and Chart.js, fetching data from a Node.js API. Implemented JWT authentication for security.",
+      "results": ["Enabled real-time decision making for 50+ store owners."]
     }
   ],
   "blogs": [

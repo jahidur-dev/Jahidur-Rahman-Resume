@@ -119,6 +119,10 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                           <input [(ngModel)]="localProfile.title" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                         </div>
                         <div class="w-full group">
+                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Tagline</label>
+                          <input [(ngModel)]="localProfile.tagline" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                        </div>
+                        <div class="w-full group">
                           <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Email Address</label>
                           <input [(ngModel)]="localProfile.email" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                         </div>
@@ -131,8 +135,20 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                           <input [(ngModel)]="localProfile.location" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                         </div>
                         <div class="w-full group">
-                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">LinkedIn URL (Plain)</label>
+                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">LinkedIn URL</label>
                           <input [(ngModel)]="localProfile.linkedin" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                        </div>
+                        <div class="w-full group">
+                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">GitHub URL</label>
+                          <input [(ngModel)]="localProfile.github" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                        </div>
+                        <div class="w-full group">
+                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Kaggle URL</label>
+                          <input [(ngModel)]="localProfile.kaggle" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                        </div>
+                        <div class="w-full group">
+                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Currently Learning</label>
+                          <input [(ngModel)]="localProfile.currentlyLearning" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                         </div>
                      </div>
 
@@ -241,13 +257,32 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                            <div class="p-6 bg-slate-900/50 animate-fade-in-down">
                               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Title</label><input [(ngModel)]="editingProject()!.title" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Type</label>
+                                  <select [(ngModel)]="editingProject()!.type" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                    <option value="web">Web Development</option>
+                                    <option value="data">Data Analytics</option>
+                                  </select>
+                                </div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Role</label><input [(ngModel)]="editingProject()!.role" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image URL</label><input [(ngModel)]="editingProject()!.imageUrl" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
-                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Link</label><input [(ngModel)]="editingProject()!.link" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Demo Link</label><input [(ngModel)]="editingProject()!.link" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Repo Link</label><input [(ngModel)]="editingProject()!.repoLink" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                
                                 <div class="md:col-span-2 group">
                                   <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Technologies (comma separated)</label>
                                   <input [ngModel]="editingProject()!.technologies.join(', ')" (ngModelChange)="updateListString($event, editingProject()!, 'technologies')" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
                                 </div>
+
+                                @if (editingProject()!.type === 'data') {
+                                  <div class="md:col-span-2 group">
+                                    <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Dataset Details</label>
+                                    <input [(ngModel)]="editingProject()!.datasetDetails" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                  </div>
+                                  <div class="md:col-span-2 group">
+                                    <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Techniques Used (comma separated)</label>
+                                    <input [ngModel]="editingProject()!.techniquesUsed ? editingProject()!.techniquesUsed!.join(', ') : ''" (ngModelChange)="updateListString($event, editingProject()!, 'techniquesUsed')" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                  </div>
+                                }
                               </div>
 
                               <div class="space-y-6 mb-6">
@@ -371,30 +406,111 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                   </div>
 
                   <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-white">Development Skills</h3>
                     <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+                      <div class="group mb-4">
+                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-blue-500">Frontend</label>
+                        <textarea [(ngModel)]="localSkills.development.frontend" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                      </div>
+                      <div class="group mb-4">
+                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-blue-500">Backend</label>
+                        <textarea [(ngModel)]="localSkills.development.backend" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                      </div>
                       <div class="group">
-                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-blue-500">Technical Skills (comma separated)</label>
-                        <textarea [(ngModel)]="localSkills.technical" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-blue-500">Tools</label>
+                        <textarea [(ngModel)]="localSkills.development.tools" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
                       </div>
                     </div>
 
+                    <h3 class="text-xl font-bold text-white">Data Skills</h3>
                     <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+                      <div class="group mb-4">
+                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-emerald-500">Languages</label>
+                        <textarea [(ngModel)]="localSkills.data.languages" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                      </div>
+                      <div class="group mb-4">
+                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-emerald-500">Visualization</label>
+                        <textarea [(ngModel)]="localSkills.data.visualization" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                      </div>
                       <div class="group">
-                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-indigo-500">Analytical Skills (comma separated)</label>
-                        <textarea [(ngModel)]="localSkills.analytical" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
+                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-emerald-500">Analysis</label>
+                        <textarea [(ngModel)]="localSkills.data.analysis" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
                       </div>
                     </div>
 
-                    <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
-                      <div class="group">
-                        <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors text-purple-500">Soft Skills (comma separated)</label>
-                        <textarea [(ngModel)]="localSkills.soft" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></textarea>
-                      </div>
-                    </div>
-                    
                     <div class="flex justify-end pt-4 border-t border-slate-800">
                        <button (click)="saveSkills()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold text-sm shadow-lg shadow-blue-900/20 transition-all active:scale-95">Update Skills</button>
                     </div>
+                  </div>
+                </div>
+              }
+              
+              <!-- Messages Tab -->
+              @if (activeTab() === 'messages') {
+                <div class="space-y-6 animate-fade-in">
+                  <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-white">Messages</h2>
+                    <div class="text-sm text-slate-400">
+                      {{ resumeService.messages().length }} Total
+                    </div>
+                  </div>
+
+                  <div class="space-y-4">
+                    @if (resumeService.messages().length === 0) {
+                      <div class="text-center py-12 text-slate-500 bg-slate-900 rounded-xl border border-slate-800">
+                        <p>No messages yet.</p>
+                      </div>
+                    }
+
+                    @for (msg of resumeService.messages(); track msg.id) {
+                      <div class="bg-slate-900 rounded-xl border border-slate-800 p-6 transition-all" 
+                           [class.border-l-4]="!msg.read" 
+                           [class.border-l-blue-500]="!msg.read"
+                           [class.bg-slate-800]="!msg.read">
+                        
+                        <div class="flex justify-between items-start mb-4">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 font-bold border border-slate-700">
+                              {{ msg.name.charAt(0).toUpperCase() }}
+                            </div>
+                            <div>
+                              <h3 class="font-bold text-white flex items-center gap-2">
+                                {{ msg.name }}
+                                @if (!msg.read) {
+                                  <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                }
+                              </h3>
+                              <p class="text-sm text-slate-400">{{ msg.email }}</p>
+                              @if (msg.phone) {
+                                <p class="text-xs text-slate-500">{{ msg.phone }}</p>
+                              }
+                            </div>
+                          </div>
+                          <span class="text-xs text-slate-500">{{ msg.date }}</span>
+                        </div>
+                        
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4 bg-slate-950/50 p-4 rounded-lg border border-slate-800/50">
+                          {{ msg.message }}
+                        </p>
+                        
+                        <div class="flex justify-end gap-3">
+                          @if (!msg.read) {
+                            <button (click)="resumeService.markMessageAsRead(msg.id)" class="text-blue-400 hover:text-blue-300 text-xs font-bold px-3 py-2 flex items-center gap-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                              </svg>
+                              Mark as Read
+                            </button>
+                          }
+                          <button (click)="resumeService.deleteMessage(msg.id)" class="text-red-500 hover:text-red-400 text-xs font-bold px-3 py-2 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    }
                   </div>
                 </div>
               }
@@ -449,8 +565,8 @@ export class AdminComponent {
   passwordInput = '';
   
   // Renamed 'blog' to 'insights'
-  activeTab = signal<'profile' | 'experience' | 'projects' | 'insights' | 'skills' | 'settings'>('profile');
-  tabs = ['profile', 'experience', 'projects', 'insights', 'skills', 'settings'];
+  activeTab = signal<'profile' | 'experience' | 'projects' | 'insights' | 'skills' | 'messages' | 'settings'>('profile');
+  tabs = ['profile', 'experience', 'projects', 'insights', 'skills', 'messages', 'settings'];
   
   // Edit Buffers (Copies of data to edit)
   expandedId = signal<string | null>(null);
@@ -459,13 +575,13 @@ export class AdminComponent {
   editingBlog = signal<BlogPost | null>(null);
   
   localProfile: Profile = { ...this.resumeService.profile() };
-  localSkills = { technical: '', analytical: '', soft: '' };
+  localSkills = { 
+    development: { frontend: '', backend: '', tools: '' },
+    data: { languages: '', visualization: '', analysis: '' }
+  };
 
   constructor() {
     effect(() => {
-      // Keep local profile somewhat in sync if external changes happen, 
-      // but primarily it's a buffer.
-      // Note: We avoid overwriting user edits here.
     });
   }
 
@@ -473,13 +589,22 @@ export class AdminComponent {
     this.activeTab.set(tab);
     if (tab === 'skills') {
       const s = this.resumeService.skills();
-      this.localSkills = {
-        technical: s.technical.join(', '),
-        analytical: s.analytical.join(', '),
-        soft: s.soft.join(', ')
-      };
+      if (s && s.development) {
+        this.localSkills = {
+          development: {
+            frontend: s.development.frontend.join(', '),
+            backend: s.development.backend.join(', '),
+            tools: s.development.tools.join(', ')
+          },
+          data: {
+            languages: s.data.languages.join(', '),
+            visualization: s.data.visualization.join(', '),
+            analysis: s.data.analysis.join(', ')
+          }
+        };
+      }
     }
-    this.cancelEdit(); // Reset any open edits
+    this.cancelEdit(); 
   }
 
   closeAdmin() {
@@ -541,6 +666,7 @@ export class AdminComponent {
     const newProj: Project = {
       id: Date.now().toString(),
       title: 'New Project',
+      type: 'web',
       description: 'Project summary...',
       technologies: [],
       imageUrl: '',
@@ -614,9 +740,16 @@ export class AdminComponent {
   // Skills
   saveSkills() {
     this.resumeService.updateSkills({
-      technical: this.localSkills.technical.split(',').map(s=>s.trim()).filter(Boolean),
-      analytical: this.localSkills.analytical.split(',').map(s=>s.trim()).filter(Boolean),
-      soft: this.localSkills.soft.split(',').map(s=>s.trim()).filter(Boolean),
+      development: {
+        frontend: this.localSkills.development.frontend.split(',').map(s=>s.trim()).filter(Boolean),
+        backend: this.localSkills.development.backend.split(',').map(s=>s.trim()).filter(Boolean),
+        tools: this.localSkills.development.tools.split(',').map(s=>s.trim()).filter(Boolean),
+      },
+      data: {
+        languages: this.localSkills.data.languages.split(',').map(s=>s.trim()).filter(Boolean),
+        visualization: this.localSkills.data.visualization.split(',').map(s=>s.trim()).filter(Boolean),
+        analysis: this.localSkills.data.analysis.split(',').map(s=>s.trim()).filter(Boolean),
+      }
     });
     alert('Skills updated!');
   }

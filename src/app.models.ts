@@ -2,11 +2,15 @@
 export interface Profile {
   name: string;
   title: string;
+  tagline: string;
   email: string;
   phone: string;
   linkedin: string;
+  github?: string;
+  kaggle?: string;
   location: string;
   summary: string;
+  currentlyLearning?: string;
 }
 
 export interface Experience {
@@ -36,16 +40,21 @@ export interface Certification {
 
 export interface Project {
   id: string;
+  type: 'web' | 'data';
   title: string;
   description: string;
   technologies: string[];
   link?: string;
+  repoLink?: string;
   imageUrl?: string;
   // Extended Case Study details
   role?: string;
   challenge?: string;
   solution?: string;
   results?: string[];
+  // Data specific
+  datasetDetails?: string;
+  techniquesUsed?: string[];
 }
 
 export interface BlogPost {
@@ -60,9 +69,26 @@ export interface BlogPost {
 }
 
 export interface SkillSet {
-  technical: string[];
-  analytical: string[];
-  soft: string[];
+  development: {
+    frontend: string[];
+    backend: string[];
+    tools: string[];
+  };
+  data: {
+    languages: string[];
+    visualization: string[];
+    analysis: string[];
+  };
+}
+
+export interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  date: string;
+  read: boolean;
 }
 
 export interface AppData {
@@ -73,4 +99,5 @@ export interface AppData {
   skills: SkillSet;
   projects: Project[];
   blogs: BlogPost[];
+  messages?: Message[];
 }

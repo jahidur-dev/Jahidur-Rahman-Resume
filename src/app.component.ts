@@ -1,14 +1,15 @@
 
 import { Component, signal, ChangeDetectionStrategy, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ResumeService } from './resume.service';
 import { AdminComponent } from './admin.component';
-import { Project, BlogPost } from './app.models';
+import { Project, BlogPost, Message } from './app.models';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, AdminComponent],
+  imports: [CommonModule, ReactiveFormsModule, AdminComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   host: {
@@ -163,12 +164,41 @@ export class AppComponent implements OnInit {
     { label: 'Domain', value: 'E-commerce', icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z' }
   ]);
 
+  // Theme State
+  // Forced to dark mode as per request
+  
+  // Typing Animation State
+  typingText = signal('');
+  fullText = "I turn data into insights and ideas into web experiences.";
+  
+  // Project Filtering
+  projectType = signal<'all' | 'web' | 'data'>('all');
+  
+  filteredProjects = computed(() => {
+    if (this.projectType() === 'all') return this.projects();
+    return this.projects().filter(p => p.type === this.projectType());
+  });
+
+  // Contact Form
+  fb = inject(FormBuilder);
+  contactForm = this.fb.group({
+    name: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', Validators.required],
+    message: ['', Validators.required]
+  });
+  
+  formStatus = signal<'idle' | 'sending' | 'success' | 'error'>('idle');
+
   constructor() {
     // Listen for exit event from Admin component
     if (typeof window !== 'undefined') {
       window.addEventListener('closeAdmin', () => {
         this.showAdmin.set(false);
       });
+      
+      // Force Dark Mode
+      document.documentElement.classList.add('dark');
     }
   }
 
@@ -179,12 +209,33 @@ export class AppComponent implements OnInit {
       
       // Start counting up as the welcome screen fades
       this.animateExperienceCount();
+      
+      // Start typing animation
+      this.startTyping();
 
       // Remove welcome from DOM after fade completes
       setTimeout(() => {
         this.showWelcome.set(false);
-      }, 800); // Matches the CSS transition duration
-    }, 2000); // Show welcome screen for 2 seconds
+      }, 800); 
+    }, 2000); 
+  }
+
+  // Theme logic removed as per request
+  
+  startTyping() {
+    let i = 0;
+    const type = () => {
+      if (i < this.fullText.length) {
+        this.typingText.update(t => t + this.fullText.charAt(i));
+        i++;
+        setTimeout(type, 50); // Typing speed
+      }
+    };
+    type();
+  }
+
+  setProjectType(type: 'all' | 'web' | 'data') {
+    this.projectType.set(type);
   }
 
   animateExperienceCount() {
@@ -279,6 +330,37 @@ export class AppComponent implements OnInit {
   printResume() {
     if (typeof window !== 'undefined') {
       window.print();
+    }
+  }
+
+  submitMessage() {
+    if (this.contactForm.valid) {
+      this.formStatus.set('sending');
+      
+      const val = this.contactForm.value;
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        name: val.name || 'Anonymous',
+        email: val.email || 'No Email',
+        phone: val.phone || 'No Phone',
+        message: val.message || '',
+        date: new Date().toLocaleDateString(),
+        read: false
+      };
+
+      // Simulate network delay
+      setTimeout(() => {
+        this.resumeService.addMessage(newMessage);
+        this.formStatus.set('success');
+        this.contactForm.reset();
+        
+        // Reset status after 3 seconds
+        setTimeout(() => {
+          this.formStatus.set('idle');
+        }, 3000);
+      }, 1000);
+    } else {
+      this.contactForm.markAllAsTouched();
     }
   }
 }

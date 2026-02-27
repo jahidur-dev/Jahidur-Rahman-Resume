@@ -1,11 +1,11 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
-import { provideZonelessChangeDetection } from '@angular/core';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZonelessChangeDetection(),
+    provideExperimentalZonelessChangeDetection(),
     provideHttpClient()
   ]
 }).catch((err) => console.error(err));

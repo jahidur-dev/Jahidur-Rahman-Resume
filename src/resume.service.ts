@@ -2,20 +2,24 @@
 import { Injectable, signal, effect, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AppData, Profile, Experience, Education, Certification, SkillSet, Project, BlogPost } from './app.models';
+import { AppData, Profile, Experience, Education, Certification, SkillSet, Project, BlogPost, Message } from './app.models';
 
-const STORAGE_KEY = 'jahidur_portfolio_data_v3'; 
+const STORAGE_KEY = 'jahidur_portfolio_data_v4'; 
 
 // Populate this with the FULL data so the site never loads blank
 const DEFAULT_DATA: AppData = {
   "profile": {
     "name": "Jahidur Rahman",
-    "title": "Manager of Analytics | Data Science Professional",
+    "title": "Manager of Analytics Team | Web Developer & Data Analyst",
+    "tagline": "I turn data into insights and ideas into web experiences.",
     "email": "jahidur.dev@gmail.com",
     "phone": "+880 1992 547279",
     "linkedin": "linkedin.com/in/jahidur-dev",
+    "github": "jahidur-dev",
+    "kaggle": "jahidur-dev",
     "location": "Dhaka, Bangladesh",
-    "summary": "Analytical and detail-oriented Data Analytics Professional with 5+ years of progressive experience at Chaldal PLC, growing from Jr. Data Analyst to Manager of Analytics. Expertise in SQL, statistical modeling, Python-based automation, and dashboard development. Proven ability to transform raw data into actionable insights that drive revenue growth and operational efficiency."
+    "summary": "Analytical and detail-oriented Data Analytics Professional with 5+ years of progressive experience at Chaldal PLC, growing from Jr. Data Analyst to Manager of Analytics. Expertise in SQL, statistical modeling, Python-based automation, and dashboard development, with a proven ability to transform raw data into actionable insights. Successfully led cross-functional analytics teams, developed demand prediction and purchase recommendation models, and implemented customer segmentation frameworks (RFMPA) to drive revenue growth and operational efficiency. Skilled at collaborating with both technical and non-technical departments to streamline processes, automate reporting, and enhance decision-making across supply chain, telesales, and profitability control.",
+    "currentlyLearning": "Advanced Deep Learning with PyTorch & System Design for Scalable Web Apps"
   },
   "experiences": [
     {
@@ -24,11 +28,10 @@ const DEFAULT_DATA: AppData = {
       "company": "Chaldal PLC",
       "period": "Jul 2024 - Present",
       "description": [
-        "Architected daily purchase recommendation models optimizing inventory for 10-minute delivery promises.",
-        "Engineered supply chain prediction models to streamline logistics and reduce waste.",
-        "Directed a cross-functional analytics team, implementing agile workflows for faster insight delivery.",
-        "Spearheaded demand forecasting for high-traffic seasons (Ramadan & Eid), directly impacting stock availability.",
-        "Led customer behavioral analysis for telesales, increasing conversion rates through targeted data support."
+        "Deployed the Purchase Recommendation model to predict the purchase amount and high potential ROI product list simulating with multiple funds resistance both for regular sourcing and ASAP (10 minutes) sourcing.",
+        "Directed the analytics team, enhancing workflow and insights delivery.",
+        "Led demand prediction for Ramadan & Eid, supporting seasonal sales.",
+        "Conducted customer analysis for telesales and Premium Care teams to improve conversion."
       ],
       "skills_used": ["Team Leadership", "Predictive Modeling", "Supply Chain Analytics", "Python"]
     },
@@ -38,11 +41,11 @@ const DEFAULT_DATA: AppData = {
       "company": "Chaldal PLC",
       "period": "Nov 2021 - Jul 2024",
       "description": [
-        "Developed comprehensive dashboards for product performance, seasonal trends, and retailer pricing strategies.",
-        "Automated workflows for Catalog & Profitability Control Room teams, reducing manual reporting hours by 40%.",
-        "Enhanced banner & offer-block tracking systems to ensure billing accuracy and supply chain synchronization.",
-        "Implemented vendor scoring and abnormal sales tracking algorithms to detect anomalies early.",
-        "Designed and deployed the RFMPA (Recency, Frequency, Monetary, Profit, Avg Basket) customer segmentation framework."
+        "Created reports and dashboards for product analysis, seasonal trends, retailer pricing, cost price analysis, and SKU brand scoring.",
+        "Guided Catalog & Profitability Control Room teams, improving workflows and automating repetitive tasks.",
+        "Enhanced banner & offer-block tracking, supporting supply chain and billing accuracy.",
+        "Conducted vendor scoring, stocking days analysis, abnormal sales tracking, and price change monitoring.",
+        "Designed customer segmentation/classification using RFMPA (Recency, Frequency, Monetary, Profit, Avg Basket Size)."
       ],
       "skills_used": ["SQL", "Dashboarding", "RFMPA", "Process Automation"]
     },
@@ -52,10 +55,10 @@ const DEFAULT_DATA: AppData = {
       "company": "Chaldal PLC",
       "period": "Jun 2020 - Nov 2021",
       "description": [
-        "Maintained critical operational dashboards for multiple business units.",
-        "Conducted 17+ SQL training batches, upskilling non-technical teams across the company.",
-        "Built automated data pipelines to support corporate, HR, and customer service departments.",
-        "Created accessible reporting tools for non-technical stakeholders."
+        "Designed and maintained dashboards and reports for multiple departments.",
+        "Conducted 17 SQL training batches across teams to strengthen company-wide data skills.",
+        "Supported corporate, telesales, HR, and customer service teams with data-driven process automation.",
+        "Built tools to collect, store, and generate reports for non-technical departments."
       ],
       "skills_used": ["SQL", "Reporting", "Training", "Data Cleaning"]
     },
@@ -65,8 +68,8 @@ const DEFAULT_DATA: AppData = {
       "company": "ICT CARE",
       "period": "July 2019 - Jun 2020",
       "description": [
-        "Developed responsive client websites using the LAMP stack and WordPress.",
-        "Customized themes and optimized frontend performance for better user experience."
+        "Built client websites using HTML, CSS, Bootstrap, JavaScript, PHP, and WordPress.",
+        "Customized WordPress themes and implemented responsive design for better UX."
       ],
       "skills_used": ["HTML/CSS", "PHP", "JavaScript", "WordPress"]
     },
@@ -74,17 +77,17 @@ const DEFAULT_DATA: AppData = {
   "education": [
     {
       "id": "1",
-      "institution": "Jessore Polytechnic Institute",
+      "institution": "Jessore Polytechnic Institute, Jashore",
       "degree": "Diploma in Computer Engineering",
-      "period": "2016 - 2020",
-      "details": "GPA 3.53 / 4.00"
+      "period": "Jul 2016 - Jun 2020",
+      "details": "Computer Technology | GPA 3.53 Out of 4.00"
     },
     {
       "id": "2",
-      "institution": "Naldanga Bhushan Pilot High School",
+      "institution": "Naldanga Bhushan Pilot High School, Kaligonj Jhenaidah",
       "degree": "Secondary School Certificate (SSC)",
-      "period": "2008 - 2016",
-      "details": "GPA 4.72 / 5.00 | Business Studies"
+      "period": "2016",
+      "details": "Business Studies | GPA 4.72 Out of 5.00"
     }
   ],
   "certifications": [
@@ -93,42 +96,30 @@ const DEFAULT_DATA: AppData = {
       "name": "Web Design & Development",
       "issuer": "ICT Care, Jashore",
       "period": "Jan 2019 - Jun 2019",
-      "details": "Comprehensive training in full-stack web technologies including HTML, CSS, Bootstrap, PHP, and JavaScript."
+      "details": "Strong grasp of HTML, CSS, Bootstrap, and JavaScript for web design. Proficient in crafting responsive layouts, ensuring optimal user experience. Expertise in content structuring, styling, and dynamic functionality implementation. PHP, jquery for web development."
     }
   ],
   "skills": {
-    "technical": [
-      "SQL (Advanced)",
-      "Python (Pandas, NumPy)",
-      "Data Visualization",
-      "Statistical Analysis",
-      "PowerBI / Tableau",
-      "Excel (Advanced)",
-      "HTML / CSS / JS"
-    ],
-    "analytical": [
-      "Predictive Modeling",
-      "Customer Segmentation",
-      "RFM Analysis",
-      "Supply Chain Optimization",
-      "Forecasting",
-      "A/B Testing Concepts"
-    ],
-    "soft": [
-      "Team Leadership",
-      "Strategic Planning",
-      "Stakeholder Management",
-      "Technical Mentorship",
-      "Cross-functional Communication"
-    ]
+    "development": {
+      "frontend": ["HTML", "CSS", "JavaScript", "Bootstrap", "WordPress"],
+      "backend": ["PHP", "MySQL"],
+      "tools": ["Git", "VS Code"]
+    },
+    "data": {
+      "languages": ["SQL (Advanced)", "Python (Basic, with automation & analytics)"],
+      "visualization": ["Dashboarding & Data Visualization", "Microsoft Office"],
+      "analysis": ["Statistical Analysis", "Predictive Modeling & Forecasting", "Customer Segmentation & Classification", "Process Automation & Optimization", "Data-Driven Decision Support"]
+    }
   },
   "projects": [
     {
       "id": "p1",
       "title": "Dynamic Purchase Prediction Model",
+      "type": "data",
       "description": "A machine learning model designed to predict daily inventory needs for 10-minute delivery hubs.",
       "technologies": ["Python", "Scikit-Learn", "SQL", "Prophet"],
       "link": "#",
+      "repoLink": "https://github.com/jahidur-dev/purchase-prediction",
       "imageUrl": "https://picsum.photos/600/400?random=1",
       "role": "Lead Data Scientist",
       "challenge": "The company faced excessive waste (15%) and frequent stockouts due to a static, manual ordering process that failed to account for daily demand fluctuations.",
@@ -137,11 +128,14 @@ const DEFAULT_DATA: AppData = {
         "Reduced perishable waste by 15% within 3 months",
         "Lowered stockout rates by 20%, improving customer satisfaction",
         "Automated 90% of daily ordering, freeing up 20+ hours/week for the supply chain team"
-      ]
+      ],
+      "datasetDetails": "Historical sales data (2 years), Weather API data, Holiday calendar",
+      "techniquesUsed": ["Time Series Forecasting", "Regression", "Data Cleaning"]
     },
     {
       "id": "p2",
       "title": "RFMPA Customer Segmentation Engine",
+      "type": "data",
       "description": "A high-impact customer clustering framework analyzing 1M+ user behaviors to drive hyper-personalized marketing and retention strategies.",
       "technologies": ["SQL", "PowerBI", "Python", "Statistics"],
       "link": "#",
@@ -153,11 +147,14 @@ const DEFAULT_DATA: AppData = {
         "Achieved a 25% increase in campaign conversion rates via personalized targeting",
         "Reactivated 5,000+ dormant high-value customers, generating significant incremental revenue",
         "Reduced discount spend by 15% by suppressing offers to price-insensitive segments"
-      ]
+      ],
+      "datasetDetails": "1M+ Customer Transaction Records",
+      "techniquesUsed": ["Clustering (K-Means)", "RFM Analysis", "SQL Window Functions"]
     },
     {
       "id": "p3",
       "title": "Automated Vendor Performance System",
+      "type": "data",
       "description": "An automated, data-driven evaluation system transforming procurement by ranking 500+ vendors on real-time operational KPIs.",
       "technologies": ["SQL", "Python", "Airflow", "Data Warehousing"],
       "link": "#",
@@ -169,7 +166,23 @@ const DEFAULT_DATA: AppData = {
         "Drove overall vendor fill rates from 82% to 94%, ensuring consistent product availability",
         "Empowered the commercial team to negotiate 3% cost savings by leveraging performance data",
         "Reduced manual vendor assessment time by 90%, allowing buyers to focus on strategic sourcing"
-      ]
+      ],
+      "datasetDetails": "Vendor Delivery Logs, Quality Check Reports",
+      "techniquesUsed": ["ETL Pipeline", "Data Warehousing", "Automated Reporting"]
+    },
+    {
+      "id": "p4",
+      "title": "E-Commerce Analytics Dashboard",
+      "type": "web",
+      "description": "A full-stack analytics dashboard for e-commerce store owners to visualize sales, traffic, and user behavior.",
+      "technologies": ["Angular", "Node.js", "Chart.js", "Tailwind CSS"],
+      "link": "#",
+      "repoLink": "https://github.com/jahidur-dev/ecommerce-dashboard",
+      "imageUrl": "https://picsum.photos/600/400?random=4",
+      "role": "Full Stack Developer",
+      "challenge": "Store owners needed a real-time view of their business metrics without navigating complex database tools.",
+      "solution": "Built a responsive dashboard using Angular and Chart.js, fetching data from a Node.js API. Implemented JWT authentication for security.",
+      "results": ["Enabled real-time decision making for 50+ store owners."]
     }
   ],
   "blogs": [
@@ -205,7 +218,6 @@ const DEFAULT_DATA: AppData = {
     }
   ]
 };
-
 @Injectable({ providedIn: 'root' })
 export class ResumeService {
   http = inject(HttpClient);
@@ -218,6 +230,7 @@ export class ResumeService {
   skills = signal<SkillSet>(DEFAULT_DATA.skills);
   projects = signal<Project[]>(DEFAULT_DATA.projects);
   blogs = signal<BlogPost[]>(DEFAULT_DATA.blogs);
+  messages = signal<Message[]>(DEFAULT_DATA.messages || []);
 
   constructor() {
     this.loadData();
@@ -231,7 +244,8 @@ export class ResumeService {
         certifications: this.certifications(),
         skills: this.skills(),
         projects: this.projects(),
-        blogs: this.blogs()
+        blogs: this.blogs(),
+        messages: this.messages()
       };
       
       // Guard for non-browser environments
@@ -281,9 +295,17 @@ export class ResumeService {
     this.experiences.set(data.experiences || []);
     this.education.set(data.education || []);
     this.certifications.set(data.certifications || []);
-    this.skills.set(data.skills || DEFAULT_DATA.skills);
+    
+    // Validate skills structure (migration from old format)
+    let validSkills = data.skills;
+    if (!validSkills || !(validSkills as any).development) {
+      validSkills = DEFAULT_DATA.skills;
+    }
+    this.skills.set(validSkills);
+    
     this.projects.set(data.projects || []);
     this.blogs.set(data.blogs || []);
+    this.messages.set(data.messages || []);
   }
 
   // Admin Actions
@@ -340,5 +362,18 @@ export class ResumeService {
   }
   deleteEducation(id: string) {
     this.education.update(list => list.filter(e => e.id !== id));
+  }
+
+  // Messages
+  addMessage(msg: Message) {
+    this.messages.update(list => [msg, ...list]);
+  }
+
+  deleteMessage(id: string) {
+    this.messages.update(list => list.filter(m => m.id !== id));
+  }
+
+  markMessageAsRead(id: string) {
+    this.messages.update(list => list.map(m => m.id === id ? { ...m, read: true } : m));
   }
 }
