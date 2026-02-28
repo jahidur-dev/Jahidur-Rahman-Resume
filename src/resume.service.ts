@@ -1,8 +1,8 @@
 
-import { Injectable, signal, effect, inject } from '@angular/core';
+import { Injectable, signal, effect, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { AppData, Profile, Experience, Education, Certification, SkillSet, Project, BlogPost, Message } from './app.models';
+import { AppData, Profile, Experience, Education, Certification, SkillSet, Project, BlogPost, Message, Category } from './app.models';
 
 const STORAGE_KEY = 'jahidur_portfolio_data_v4'; 
 
@@ -115,7 +115,7 @@ const DEFAULT_DATA: AppData = {
     {
       "id": "p1",
       "title": "Dynamic Purchase Prediction Model",
-      "type": "data",
+      "type": "Data Analytics",
       "description": "A machine learning model designed to predict daily inventory needs for 10-minute delivery hubs.",
       "technologies": ["Python", "Scikit-Learn", "SQL", "Prophet"],
       "link": "#",
@@ -135,7 +135,7 @@ const DEFAULT_DATA: AppData = {
     {
       "id": "p2",
       "title": "RFMPA Customer Segmentation Engine",
-      "type": "data",
+      "type": "Data Analytics",
       "description": "A high-impact customer clustering framework analyzing 1M+ user behaviors to drive hyper-personalized marketing and retention strategies.",
       "technologies": ["SQL", "PowerBI", "Python", "Statistics"],
       "link": "#",
@@ -154,7 +154,7 @@ const DEFAULT_DATA: AppData = {
     {
       "id": "p3",
       "title": "Automated Vendor Performance System",
-      "type": "data",
+      "type": "Data Analytics",
       "description": "An automated, data-driven evaluation system transforming procurement by ranking 500+ vendors on real-time operational KPIs.",
       "technologies": ["SQL", "Python", "Airflow", "Data Warehousing"],
       "link": "#",
@@ -173,7 +173,7 @@ const DEFAULT_DATA: AppData = {
     {
       "id": "p4",
       "title": "E-Commerce Analytics Dashboard",
-      "type": "web",
+      "type": "Web Development",
       "description": "A full-stack analytics dashboard for e-commerce store owners to visualize sales, traffic, and user behavior.",
       "technologies": ["Angular", "Node.js", "Chart.js", "Tailwind CSS"],
       "link": "#",
@@ -183,6 +183,34 @@ const DEFAULT_DATA: AppData = {
       "challenge": "Store owners needed a real-time view of their business metrics without navigating complex database tools.",
       "solution": "Built a responsive dashboard using Angular and Chart.js, fetching data from a Node.js API. Implemented JWT authentication for security.",
       "results": ["Enabled real-time decision making for 50+ store owners."]
+    },
+    {
+      "id": "p5",
+      "title": "Sales Forecasting Tool",
+      "type": "Data Analytics",
+      "description": "An automated tool for predicting monthly sales figures using historical data and seasonal trends.",
+      "technologies": ["Python", "Pandas", "Matplotlib", "Flask"],
+      "link": "#",
+      "repoLink": "https://github.com/jahidur-dev/sales-forecasting",
+      "imageUrl": "https://picsum.photos/600/400?random=5",
+      "role": "Data Scientist",
+      "challenge": "Manual sales forecasting was time-consuming and prone to human error.",
+      "solution": "Developed a Python-based tool that ingests historical sales data and outputs forecasts using statistical models, served via a Flask API.",
+      "results": ["Improved forecast accuracy by 15%", "Reduced manual effort by 10 hours/month"]
+    },
+    {
+      "id": "p6",
+      "title": "Portfolio Website V1",
+      "type": "Web Development",
+      "description": "The first iteration of my personal portfolio website, showcasing my early work and skills.",
+      "technologies": ["HTML", "CSS", "JavaScript", "jQuery"],
+      "link": "#",
+      "repoLink": "https://github.com/jahidur-dev/portfolio-v1",
+      "imageUrl": "https://picsum.photos/600/400?random=6",
+      "role": "Frontend Developer",
+      "challenge": "Needed a professional online presence to showcase my projects and resume.",
+      "solution": "Designed and built a responsive single-page portfolio using standard web technologies.",
+      "results": ["Secured first internship via this portfolio"]
     }
   ],
   "blogs": [
@@ -215,7 +243,44 @@ const DEFAULT_DATA: AppData = {
       "imageUrl": "https://picsum.photos/600/400?random=12",
       "excerpt": "Moving from an individual contributor to a manager requires a shift in mindset. Here are my top 3 learnings.",
       "content": "The transition from writing code to managing people who write code is challenging. \n\n1. Delegate, don't dictate: Trust your team to find the solution. \n2. Focus on the \"Why\": Engineers need to know the business impact of their work. \n3. Shield the team: Protect them from shifting priorities so they can focus on deep work.\n\nThese three pillars have helped me build a high-performing analytics unit."
+    },
+    {
+      "id": "b4",
+      "title": "The Art of Data Storytelling",
+      "category": "Technical",
+      "date": "Aug 10, 2024",
+      "readTime": "6 min read",
+      "imageUrl": "https://picsum.photos/600/400?random=13",
+      "excerpt": "Data without context is just noise. Learn how to craft compelling narratives that drive action.",
+      "content": "Dashboards are great, but stories change minds. In this article, I discuss the importance of context, visualization choice, and narrative structure in data presentation."
+    },
+    {
+      "id": "b5",
+      "title": "Building Scalable Angular Apps",
+      "category": "Technical",
+      "date": "Jul 05, 2024",
+      "readTime": "7 min read",
+      "imageUrl": "https://picsum.photos/600/400?random=14",
+      "excerpt": "Best practices for structuring large Angular applications for maintainability and performance.",
+      "content": "As Angular applications grow, state management and module structure become critical. I share my experience with Signals, standalone components, and lazy loading."
+    },
+    {
+      "id": "b6",
+      "title": "From Junior to Manager: A Journey",
+      "category": "Leadership",
+      "date": "Jun 15, 2024",
+      "readTime": "5 min read",
+      "imageUrl": "https://picsum.photos/600/400?random=15",
+      "excerpt": "Reflecting on my 5-year journey at Chaldal PLC and the lessons learned along the way.",
+      "content": "Growth is never linear. From my first SQL query to leading a team of analysts, here are the key milestones and mentors that shaped my career path."
     }
+  ],
+  "categories": [
+    { id: 'c1', name: 'Web Development', slug: 'web-development', type: 'project', published: true },
+    { id: 'c2', name: 'Data Analytics', slug: 'data-analytics', type: 'project', published: true },
+    { id: 'c3', name: 'Technical', slug: 'technical', type: 'blog', published: true },
+    { id: 'c4', name: 'Case Study', slug: 'case-study', type: 'blog', published: true },
+    { id: 'c5', name: 'Leadership', slug: 'leadership', type: 'blog', published: true }
   ]
 };
 @Injectable({ providedIn: 'root' })
@@ -231,6 +296,11 @@ export class ResumeService {
   projects = signal<Project[]>(DEFAULT_DATA.projects);
   blogs = signal<BlogPost[]>(DEFAULT_DATA.blogs);
   messages = signal<Message[]>(DEFAULT_DATA.messages || []);
+  categories = signal<Category[]>(DEFAULT_DATA.categories || []);
+
+  // Computed signals for backward compatibility
+  projectCategories = computed(() => this.categories().filter(c => c.type === 'project').map(c => c.name));
+  blogCategories = computed(() => this.categories().filter(c => c.type === 'blog').map(c => c.name));
 
   constructor() {
     this.loadData();
@@ -245,7 +315,8 @@ export class ResumeService {
         skills: this.skills(),
         projects: this.projects(),
         blogs: this.blogs(),
-        messages: this.messages()
+        messages: this.messages(),
+        categories: this.categories()
       };
       
       // Guard for non-browser environments
@@ -306,6 +377,30 @@ export class ResumeService {
     this.projects.set(data.projects || []);
     this.blogs.set(data.blogs || []);
     this.messages.set(data.messages || []);
+    
+    // Handle categories migration
+    if (data.categories) {
+      this.categories.set(data.categories);
+    } else {
+      // Migrate old string arrays to Category objects if needed
+      const cats: Category[] = [];
+      if (data.projectCategories) {
+        data.projectCategories.forEach((name, i) => {
+          cats.push({ id: `pc-${i}`, name, slug: name.toLowerCase().replace(/ /g, '-'), type: 'project', published: true });
+        });
+      } else {
+        DEFAULT_DATA.categories?.filter(c => c.type === 'project').forEach(c => cats.push(c));
+      }
+
+      if (data.blogCategories) {
+        data.blogCategories.forEach((name, i) => {
+          cats.push({ id: `bc-${i}`, name, slug: name.toLowerCase().replace(/ /g, '-'), type: 'blog', published: true });
+        });
+      } else {
+        DEFAULT_DATA.categories?.filter(c => c.type === 'blog').forEach(c => cats.push(c));
+      }
+      this.categories.set(cats);
+    }
   }
 
   // Admin Actions
@@ -349,6 +444,19 @@ export class ResumeService {
 
   deleteBlog(id: string) {
     this.blogs.update(list => list.filter(b => b.id !== id));
+  }
+
+  // Categories Management
+  addCategory(category: Category) {
+    this.categories.update(list => [...list, category]);
+  }
+
+  updateCategory(updated: Category) {
+    this.categories.update(list => list.map(c => c.id === updated.id ? updated : c));
+  }
+
+  deleteCategory(id: string) {
+    this.categories.update(list => list.filter(c => c.id !== id));
   }
 
   // Skills

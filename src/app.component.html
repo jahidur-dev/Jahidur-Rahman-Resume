@@ -298,7 +298,51 @@
   </div>
 </nav>
 
+<!-- Mobile Menu Overlay -->
+@if (mobileMenuOpen()) {
+  <div class="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300" 
+         [class.opacity-0]="closingMenu()"
+         (click)="closeMobileMenu()"></div>
+
+    <!-- Menu Panel (Slide from Left) -->
+    <div class="relative flex flex-col w-4/5 max-w-xs h-full bg-slate-900 border-r border-slate-800 shadow-2xl transform transition-transform duration-300 ease-out"
+         [class.-translate-x-full]="closingMenu()">
+      
+      <div class="flex items-center justify-between p-6 border-b border-slate-800">
+        <div class="text-xl font-bold text-white tracking-tight">
+          Jahidur<span class="text-blue-500">.Dev</span>
+        </div>
+        <button (click)="closeMobileMenu()" class="p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-800">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex flex-col flex-1 overflow-y-auto p-6 gap-2">
+        <button (click)="scrollToSection('about')" class="text-left px-4 py-3 text-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">About</button>
+        <button (click)="scrollToSection('skills')" class="text-left px-4 py-3 text-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">Skills</button>
+        <button (click)="scrollToSection('projects')" class="text-left px-4 py-3 text-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">Projects</button>
+        <button (click)="scrollToSection('blog')" class="text-left px-4 py-3 text-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">Insights</button>
+        <button (click)="scrollToSection('contact')" class="text-left px-4 py-3 text-lg font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">Contact</button>
+      </div>
+
+      <div class="p-6 border-t border-slate-800">
+        <button (click)="printResume()" class="w-full flex items-center justify-center gap-3 text-white bg-blue-600 hover:bg-blue-700 transition-colors font-bold text-base px-6 py-3 rounded-xl shadow-lg shadow-blue-900/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download CV
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
 <!-- Hero Section -->
+@if (viewMode() === 'home') {
 <section id="hero" class="relative min-h-screen flex items-center overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
   <!-- Abstract Data Background -->
   <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -316,7 +360,7 @@
     </svg>
   </div>
   
-  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-20 pb-12 lg:py-0">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="text-center lg:text-left">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
@@ -327,15 +371,15 @@
           Available for Hire
         </div>
         
-        <h1 class="text-5xl lg:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
+        <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
           {{ profile().name }}
         </h1>
-        <h3 class="text-3xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-emerald-500 animate-gradient-text mb-6">
+        <h3 class="text-2xl sm:text-3xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-emerald-500 animate-gradient-text mb-6 leading-snug">
           {{ profile().title }}
         </h3>
         
-        <div class="h-16 mb-8">
-           <p class="text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-mono">
+        <div class="h-auto min-h-[4rem] mb-8">
+           <p class="text-lg sm:text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-mono break-words">
              <span class="text-blue-500">></span> {{ typingText() }}<span class="animate-pulse">_</span>
            </p>
         </div>
@@ -415,45 +459,47 @@
 </section>
 
 <!-- PROJECTS PORTFOLIO -->
+}
+@if (viewMode() === 'home' || viewMode() === 'all-projects') {
 <section id="projects" class="py-24 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Featured Projects</h2>
+    <div class="text-center mb-16 relative">
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white inline-flex items-center gap-4">
+        Featured Projects
+        @if (viewMode() === 'home') {
+          <button (click)="setViewMode('all-projects')" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+            View More 
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        }
+        @if (viewMode() === 'all-projects') {
+          <button (click)="setViewMode('home')" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Home
+          </button>
+        }
+      </h2>
       <p class="mt-4 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Key initiatives driving measurable business impact and technical innovation.</p>
     </div>
 
     <!-- Project Filter -->
-    <div class="flex justify-center gap-4 mb-12">
-      <button (click)="setProjectType('all')" 
-              class="px-6 py-2 rounded-full text-sm font-bold transition-all duration-200"
-              [class.bg-blue-600]="projectType() === 'all'"
-              [class.text-white]="projectType() === 'all'"
-              [class.bg-slate-100]="projectType() !== 'all'"
-              [class.dark:bg-slate-800]="projectType() !== 'all'"
-              [class.text-slate-600]="projectType() !== 'all'"
-              [class.dark:text-slate-300]="projectType() !== 'all'">
-        All Projects
-      </button>
-      <button (click)="setProjectType('web')" 
-              class="px-6 py-2 rounded-full text-sm font-bold transition-all duration-200"
-              [class.bg-blue-600]="projectType() === 'web'"
-              [class.text-white]="projectType() === 'web'"
-              [class.bg-slate-100]="projectType() !== 'web'"
-              [class.dark:bg-slate-800]="projectType() !== 'web'"
-              [class.text-slate-600]="projectType() !== 'web'"
-              [class.dark:text-slate-300]="projectType() !== 'web'">
-        Web Development
-      </button>
-      <button (click)="setProjectType('data')" 
-              class="px-6 py-2 rounded-full text-sm font-bold transition-all duration-200"
-              [class.bg-emerald-600]="projectType() === 'data'"
-              [class.text-white]="projectType() === 'data'"
-              [class.bg-slate-100]="projectType() !== 'data'"
-              [class.dark:bg-slate-800]="projectType() !== 'data'"
-              [class.text-slate-600]="projectType() !== 'data'"
-              [class.dark:text-slate-300]="projectType() !== 'data'">
-        Data Analytics
-      </button>
+    <div class="flex flex-wrap justify-center gap-4 mb-12">
+       @for (cat of projectCategories(); track cat) {
+         <button (click)="setProjectType(cat)" 
+                 class="px-6 py-2 rounded-full text-sm font-bold transition-all duration-200"
+                 [class.bg-blue-600]="projectType() === cat"
+                 [class.text-white]="projectType() === cat"
+                 [class.bg-slate-100]="projectType() !== cat"
+                 [class.dark:bg-slate-800]="projectType() !== cat"
+                 [class.text-slate-600]="projectType() !== cat"
+                 [class.dark:text-slate-300]="projectType() !== cat">
+           {{ cat }}
+         </button>
+       }
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -472,11 +518,9 @@
             
             <!-- Type Badge -->
             <div class="absolute top-4 right-4">
-              @if (proj.type === 'data') {
-                <span class="px-3 py-1 bg-emerald-500/90 backdrop-blur-sm text-white text-xs font-bold rounded-full shadow-sm">Data</span>
-              } @else {
-                <span class="px-3 py-1 bg-blue-500/90 backdrop-blur-sm text-white text-xs font-bold rounded-full shadow-sm">Web</span>
-              }
+               <span class="px-3 py-1 bg-slate-900/80 backdrop-blur-sm text-white text-xs font-bold rounded-full shadow-sm border border-slate-700">
+                 {{ proj.type }}
+               </span>
             </div>
 
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
@@ -504,12 +548,32 @@
     </div>
   </div>
 </section>
+}
 
 <!-- INSIGHTS SECTION (Renamed from Blog) -->
+@if (viewMode() === 'home' || viewMode() === 'all-insights') {
 <section id="blog" class="py-24 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Latest Insights</h2>
+    <div class="text-center mb-12 relative">
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white inline-flex items-center gap-4">
+        Latest Insights
+        @if (viewMode() === 'home') {
+          <button (click)="setViewMode('all-insights')" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+            View More 
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        }
+        @if (viewMode() === 'all-insights') {
+          <button (click)="setViewMode('home')" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Home
+          </button>
+        }
+      </h2>
       <p class="mt-4 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">Thoughts on analytics, leadership, and technology trends.</p>
     </div>
 
@@ -576,8 +640,10 @@
     </div>
   </div>
 </section>
+}
 
 <!-- Experience Section -->
+@if (viewMode() === 'home') {
 <section id="experience" class="py-24 bg-white dark:bg-slate-950 relative overflow-hidden transition-colors duration-300">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="text-center mb-16">
@@ -836,6 +902,7 @@
 <footer id="contact" class="bg-slate-900 dark:bg-black text-white py-20 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
+    @if (viewMode() === 'home') {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
       <!-- Left Column: Contact Info -->
       <div>
@@ -950,6 +1017,7 @@
         </form>
       </div>
     </div>
+    }
 
     <div class="mt-20 pt-8 border-t border-slate-800 text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center">
       <p>&copy; {{ currentYear }} {{ profile().name }}. All rights reserved.</p>
@@ -960,3 +1028,15 @@
     </div>
   </div>
 </footer>
+}
+
+<!-- Scroll to Top Button -->
+@if (showScrollTop()) {
+  <button (click)="scrollToTop()" 
+          class="fixed bottom-8 right-8 z-40 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-900/20 transition-all duration-300 animate-fade-in-up focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+          aria-label="Scroll to top">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </button>
+}

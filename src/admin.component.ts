@@ -3,7 +3,7 @@ import { Component, signal, inject, computed, effect, ViewChild, ElementRef } fr
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResumeService } from './resume.service';
-import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
+import { Experience, Profile, Project, SkillSet, BlogPost, Category } from './app.models';
 
 @Component({
   selector: 'app-admin',
@@ -13,8 +13,15 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
     <div class="fixed inset-0 z-[100] bg-slate-950 text-slate-200 overflow-hidden flex flex-col">
       
       <!-- Top Header -->
-      <header class="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
+      <header class="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between px-6 shrink-0 relative z-20">
         <div class="flex items-center gap-3">
+          <!-- Mobile Menu Toggle -->
+          <button (click)="toggleMobileMenu()" class="md:hidden p-1 text-slate-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          
           <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">A</div>
           <h1 class="font-bold text-lg tracking-tight text-white">Admin Dashboard</h1>
         </div>
@@ -23,7 +30,7 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
-            Back to Site
+            <span class="hidden sm:inline">Back to Site</span>
           </button>
         </div>
       </header>
@@ -63,9 +70,9 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
         </div>
       } @else {
         <!-- Main Dashboard Layout -->
-        <div class="flex-1 flex overflow-hidden">
+        <div class="flex-1 flex overflow-hidden relative">
           
-          <!-- Sidebar Navigation -->
+          <!-- Sidebar Navigation (Desktop) -->
           <nav class="w-64 bg-slate-900 border-r border-slate-800 flex-col hidden md:flex">
             <div class="p-4 space-y-1">
               @for (tab of tabs; track tab) {
@@ -81,21 +88,32 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
             </div>
           </nav>
 
-          <!-- Mobile Nav (Top) -->
-          <nav class="md:hidden flex overflow-x-auto bg-slate-900 border-b border-slate-800 absolute top-16 left-0 right-0 z-10">
-            @for (tab of tabs; track tab) {
-              <button (click)="setActiveTab(tab)"
-                      [class.border-blue-500]="activeTab() === tab"
-                      [class.text-blue-400]="activeTab() === tab"
-                      [class.border-transparent]="activeTab() !== tab"
-                      class="px-6 py-4 border-b-2 whitespace-nowrap font-medium text-sm transition-colors">
-                {{ tab | titlecase }}
-              </button>
-            }
-          </nav>
+          <!-- Mobile Sidebar Overlay -->
+          @if (mobileMenuOpen()) {
+            <div class="absolute inset-0 z-40 md:hidden">
+              <!-- Backdrop -->
+              <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" (click)="toggleMobileMenu()"></div>
+              
+              <!-- Drawer -->
+              <nav class="absolute top-0 bottom-0 left-0 w-64 bg-slate-900 border-r border-slate-800 flex flex-col shadow-2xl animate-slide-in-left">
+                <div class="p-4 space-y-1 mt-4">
+                  @for (tab of tabs; track tab) {
+                    <button (click)="setActiveTab(tab); toggleMobileMenu()"
+                            [class.bg-blue-600]="activeTab() === tab"
+                            [class.text-white]="activeTab() === tab"
+                            [class.text-slate-400]="activeTab() !== tab"
+                            [class.hover:bg-slate-800]="activeTab() !== tab"
+                            class="w-full text-left px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-3">
+                      {{ tab | titlecase }}
+                    </button>
+                  }
+                </div>
+              </nav>
+            </div>
+          }
 
           <!-- Content Area -->
-          <main class="flex-1 overflow-y-auto bg-slate-950 p-4 md:p-8 pt-20 md:pt-8 scroll-smooth">
+          <main class="flex-1 overflow-y-auto bg-slate-950 p-4 md:p-8 scroll-smooth">
             <div class="max-w-4xl mx-auto space-y-8 pb-20">
               
               <!-- Profile Tab -->
@@ -149,6 +167,38 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                         <div class="w-full group">
                           <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Currently Learning</label>
                           <input [(ngModel)]="localProfile.currentlyLearning" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                        </div>
+                        
+                        <!-- Resume Upload -->
+                        <div class="w-full group col-span-1 md:col-span-2 border-t border-slate-800 pt-6 mt-2">
+                          <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Update Resume (PDF)</label>
+                          <div class="flex items-center gap-4">
+                            <input type="file" accept="application/pdf" (change)="onResumeSelected($event)" #fileInput class="hidden">
+                            <button (click)="fileInput.click()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition-colors border border-slate-700 flex items-center gap-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                              </svg>
+                              Select PDF
+                            </button>
+                            <span class="text-sm text-slate-400">{{ selectedFileName() || 'No file selected' }}</span>
+                            
+                            @if (selectedFileBase64()) {
+                              <button (click)="uploadResume()" [disabled]="uploadingResume()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-lg shadow-blue-900/20 flex items-center gap-2 ml-auto">
+                                @if (uploadingResume()) {
+                                  <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                  </svg>
+                                  Uploading...
+                                } @else {
+                                  Upload Resume
+                                }
+                              </button>
+                            }
+                          </div>
+                          @if (uploadMessage()) {
+                            <p class="text-xs mt-2" [class.text-green-400]="uploadSuccess()" [class.text-red-400]="!uploadSuccess()">{{ uploadMessage() }}</p>
+                          }
                         </div>
                      </div>
 
@@ -258,13 +308,18 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Title</label><input [(ngModel)]="editingProject()!.title" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Type</label>
-                                  <select [(ngModel)]="editingProject()!.type" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
-                                    <option value="web">Web Development</option>
-                                    <option value="data">Data Analytics</option>
+                                  <select [(ngModel)]="editingProject()!.type" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm appearance-none">
+                                    @for (cat of resumeService.projectCategories(); track cat) {
+                                      <option [value]="cat">{{ cat }}</option>
+                                    }
                                   </select>
                                 </div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Role</label><input [(ngModel)]="editingProject()!.role" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
-                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image URL</label><input [(ngModel)]="editingProject()!.imageUrl" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                <div class="group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image</label>
+                                  <input type="file" (change)="onFileSelected($event, editingProject()!, 'imageUrl')" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-blue-400 hover:file:bg-slate-700 mb-2 cursor-pointer"/>
+                                  <input [(ngModel)]="editingProject()!.imageUrl" placeholder="Or Image URL" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                </div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Demo Link</label><input [(ngModel)]="editingProject()!.link" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Repo Link</label><input [(ngModel)]="editingProject()!.repoLink" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
                                 
@@ -344,10 +399,20 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                            <div class="p-6 bg-slate-900/50 animate-fade-in-down">
                               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div class="md:col-span-2 group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Title</label><input [(ngModel)]="editingBlog()!.title" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
-                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Category</label><input [(ngModel)]="editingBlog()!.category" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Category</label>
+                                  <select [(ngModel)]="editingBlog()!.category" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm appearance-none">
+                                    @for (cat of resumeService.blogCategories(); track cat) {
+                                      <option [value]="cat">{{ cat }}</option>
+                                    }
+                                  </select>
+                                </div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Date</label><input [(ngModel)]="editingBlog()!.date" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
                                 <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Read Time</label><input [(ngModel)]="editingBlog()!.readTime" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
-                                <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image URL</label><input [(ngModel)]="editingBlog()!.imageUrl" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm"></div>
+                                <div class="group">
+                                  <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 group-focus-within:text-blue-400 transition-colors">Image</label>
+                                  <input type="file" (change)="onFileSelected($event, editingBlog()!, 'imageUrl')" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-blue-400 hover:file:bg-slate-700 mb-2 cursor-pointer"/>
+                                  <input [(ngModel)]="editingBlog()!.imageUrl" placeholder="Or Image URL" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600 text-sm">
+                                </div>
                               </div>
 
                               <div class="space-y-6 mb-6">
@@ -398,6 +463,75 @@ import { Experience, Profile, Project, SkillSet, BlogPost } from './app.models';
                 </div>
               }
 
+              <!-- Categories Tab -->
+              @if (activeTab() === 'categories') {
+                <div class="space-y-6 animate-fade-in">
+                  <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-white">Manage Categories</h2>
+                    <button (click)="addNewCategory()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 border border-slate-700 transition-all">+ Add Category</button>
+                  </div>
+
+                  <div class="grid grid-cols-1 gap-4">
+                    @for (cat of resumeService.categories(); track cat.id) {
+                      <div class="bg-slate-900 rounded-xl border border-slate-800 p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                          <div class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider" 
+                               [class.bg-blue-900]="cat.type === 'project'" [class.text-blue-400]="cat.type === 'project'"
+                               [class.bg-emerald-900]="cat.type === 'blog'" [class.text-emerald-400]="cat.type === 'blog'">
+                            {{ cat.type }}
+                          </div>
+                          <div>
+                            <h3 class="font-bold text-white">{{ cat.name }}</h3>
+                            <p class="text-xs text-slate-500">/{{ cat.slug }}</p>
+                          </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <button (click)="editCategory(cat)" class="text-blue-500 hover:text-blue-400 text-sm font-medium px-3 py-1">Edit</button>
+                          <button (click)="resumeService.deleteCategory(cat.id)" class="text-red-500 hover:text-red-400 text-sm font-medium px-3 py-1">Delete</button>
+                        </div>
+                      </div>
+                      
+                      <!-- Edit Form -->
+                      @if (expandedId() === cat.id && editingCategory()) {
+                        <div class="bg-slate-900/50 border-x border-b border-slate-800 p-6 rounded-b-xl mb-4 animate-fade-in-down">
+                           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                              <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Name</label><input [(ngModel)]="editingCategory()!.name" (input)="generateSlug(editingCategory()!)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm"></div>
+                              <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Slug</label><input [(ngModel)]="editingCategory()!.slug" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm"></div>
+                              <div class="group"><label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Type</label>
+                                <select [(ngModel)]="editingCategory()!.type" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm appearance-none">
+                                  <option value="project">Project</option>
+                                  <option value="blog">Insight</option>
+                                </select>
+                              </div>
+                              <div class="group">
+                                <label class="block text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Parent Category</label>
+                                <select [(ngModel)]="editingCategory()!.parentId" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white text-sm appearance-none">
+                                  <option [ngValue]="undefined">None</option>
+                                  @for (pCat of resumeService.categories(); track pCat.id) {
+                                    @if (pCat.id !== editingCategory()!.id && pCat.type === editingCategory()!.type) {
+                                      <option [value]="pCat.id">{{ pCat.name }}</option>
+                                    }
+                                  }
+                                </select>
+                              </div>
+                              <div class="group flex items-center pt-6">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                  <input type="checkbox" [(ngModel)]="editingCategory()!.published" class="w-5 h-5 rounded border-slate-700 bg-slate-950 text-blue-600 focus:ring-blue-500">
+                                  <span class="text-slate-300 text-sm font-medium">Published</span>
+                                </label>
+                              </div>
+                           </div>
+                           <div class="flex justify-end gap-3">
+                             <button (click)="cancelEdit()" class="px-4 py-2 text-slate-400 hover:text-white">Cancel</button>
+                             <button (click)="saveCategory()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold text-sm">Save Category</button>
+                           </div>
+                        </div>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+              
               <!-- Skills Tab -->
               @if (activeTab() === 'skills') {
                 <div class="space-y-6 animate-fade-in">
@@ -565,20 +699,28 @@ export class AdminComponent {
   passwordInput = '';
   
   // Renamed 'blog' to 'insights'
-  activeTab = signal<'profile' | 'experience' | 'projects' | 'insights' | 'skills' | 'messages' | 'settings'>('profile');
-  tabs = ['profile', 'experience', 'projects', 'insights', 'skills', 'messages', 'settings'];
+  activeTab = signal<'profile' | 'experience' | 'projects' | 'insights' | 'categories' | 'skills' | 'messages' | 'settings'>('profile');
+  tabs = ['profile', 'experience', 'projects', 'insights', 'categories', 'skills', 'messages', 'settings'];
   
   // Edit Buffers (Copies of data to edit)
   expandedId = signal<string | null>(null);
   editingExperience = signal<Experience | null>(null);
   editingProject = signal<Project | null>(null);
   editingBlog = signal<BlogPost | null>(null);
+  editingCategory = signal<Category | null>(null);
   
   localProfile: Profile = { ...this.resumeService.profile() };
   localSkills = { 
     development: { frontend: '', backend: '', tools: '' },
     data: { languages: '', visualization: '', analysis: '' }
   };
+
+  // Mobile Menu State
+  mobileMenuOpen = signal(false);
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen.update(v => !v);
+  }
 
   constructor() {
     effect(() => {
@@ -623,6 +765,127 @@ export class AdminComponent {
       this.localProfile = JSON.parse(JSON.stringify(this.resumeService.profile()));
     } else {
       this.loginError.set(true);
+    }
+  }
+
+  // Category Management State
+  
+  // Resume Upload State
+  selectedFileName = signal<string | null>(null);
+  selectedFileBase64 = signal<string | null>(null);
+  uploadingResume = signal(false);
+  uploadMessage = signal<string | null>(null);
+  uploadSuccess = signal(false);
+
+  onResumeSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        this.uploadMessage.set('Please select a PDF file.');
+        this.uploadSuccess.set(false);
+        return;
+      }
+      this.selectedFileName.set(file.name);
+      
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.selectedFileBase64.set(e.target.result);
+        this.uploadMessage.set(null);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async uploadResume() {
+    const base64 = this.selectedFileBase64();
+    if (!base64) return;
+
+    this.uploadingResume.set(true);
+    this.uploadMessage.set(null);
+
+    try {
+      const response = await fetch('/api/upload-resume', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ fileData: base64 })
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        let errorMessage = `Upload failed: ${response.status} ${response.statusText}`;
+        
+        if (response.status === 404) {
+             errorMessage = "Error: The upload endpoint was not found (404). Ensure the backend server is running.";
+        } else if (response.status === 413) {
+             errorMessage = "Error: File is too large. Maximum size is 10MB.";
+        }
+
+        try {
+            const errorJson = JSON.parse(text);
+            if (errorJson && errorJson.error) {
+                errorMessage = `Server Error: ${errorJson.error}`;
+            }
+        } catch (e) {
+            // response was not JSON, use default or status-based message
+        }
+        throw new Error(errorMessage);
+      }
+
+      const result = await response.json();
+
+      this.uploadSuccess.set(true);
+      this.uploadMessage.set('Resume uploaded successfully!');
+      this.selectedFileName.set(null);
+      this.selectedFileBase64.set(null);
+      
+    } catch (error: any) {
+      this.uploadSuccess.set(false);
+      this.uploadMessage.set(error.message || 'Failed to upload resume. Please try again.');
+      console.error(error);
+    } finally {
+      this.uploadingResume.set(false);
+    }
+  }
+
+  addNewCategory() {
+    const newCat: Category = {
+      id: Date.now().toString(),
+      name: 'New Category',
+      slug: 'new-category',
+      type: 'project',
+      published: true
+    };
+    this.resumeService.addCategory(newCat);
+    this.editCategory(newCat);
+  }
+
+  editCategory(cat: Category) {
+    this.editingCategory.set(JSON.parse(JSON.stringify(cat)));
+    this.expandedId.set(cat.id);
+  }
+
+  saveCategory() {
+    if (this.editingCategory()) {
+      this.resumeService.updateCategory(this.editingCategory()!);
+      this.cancelEdit();
+    }
+  }
+
+  generateSlug(cat: Category) {
+    cat.slug = cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  }
+
+  // Image Upload Helper
+  onFileSelected(event: any, model: any, field: string) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        model[field] = e.target.result;
+      };
+      reader.readAsDataURL(file);
     }
   }
 
@@ -760,6 +1023,7 @@ export class AdminComponent {
     this.editingExperience.set(null);
     this.editingProject.set(null);
     this.editingBlog.set(null);
+    this.editingCategory.set(null);
   }
 
   updateListString(text: string, obj: any, field: string) {

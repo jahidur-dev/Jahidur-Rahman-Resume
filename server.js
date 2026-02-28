@@ -9,9 +9,42 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Increase payload limit for file uploads
+app.use(express.json({ limit: '10mb' }));
+
 // Path to the Angular build output
 // Adjust this if your build output path changes in angular.json
 const distPath = join(__dirname, 'dist/jahidur-portfolio/browser');
+const publicPath = join(__dirname, 'public');
+
+// Resume Upload Endpoint
+app.post('/api/upload-resume', (req, res) => {
+  const { fileData } = req.body; // Expecting base64 string
+  if (!fileData) {
+    return res.status(400).json({ error: 'No file data provided' });
+  }
+
+  const base64Data = fileData.replace(/^data:application\/pdf;base64,/, "");
+  const buffer = Buffer.from(base64Data, 'base64');
+
+  try {
+    // Save to dist for immediate availability
+    if (fs.existsSync(distPath)) {
+      fs.writeFileSync(join(distPath, 'resume.pdf'), buffer);
+    }
+    
+    // Save to public for persistence across rebuilds
+    if (!fs.existsSync(publicPath)) {
+        fs.mkdirSync(publicPath);
+    }
+    fs.writeFileSync(join(publicPath, 'resume.pdf'), buffer);
+
+    res.json({ success: true, message: 'Resume uploaded successfully' });
+  } catch (err) {
+    console.error('Error saving resume:', err);
+    res.status(500).json({ error: 'Failed to save resume' });
+  }
+});
 
 // Check if dist folder exists
 if (fs.existsSync(distPath)) {

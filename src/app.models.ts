@@ -40,7 +40,7 @@ export interface Certification {
 
 export interface Project {
   id: string;
-  type: 'web' | 'data';
+  type: string; // Changed from union type to string for dynamic categories
   title: string;
   description: string;
   technologies: string[];
@@ -91,6 +91,15 @@ export interface Message {
   read: boolean;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  type: 'project' | 'blog';
+  parentId?: string;
+  published: boolean;
+}
+
 export interface AppData {
   profile: Profile;
   experiences: Experience[];
@@ -100,4 +109,8 @@ export interface AppData {
   projects: Project[];
   blogs: BlogPost[];
   messages?: Message[];
+  categories?: Category[];
+  // Deprecated but kept for migration if needed, though we will try to use categories
+  projectCategories?: string[]; 
+  blogCategories?: string[];
 }

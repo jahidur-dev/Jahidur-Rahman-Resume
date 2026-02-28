@@ -137,6 +137,14 @@ export class AppComponent implements OnInit {
   closingMenu = signal(false);
   
   // Project Modal State
+  // View Mode State
+  viewMode = signal<'home' | 'all-projects' | 'all-insights'>('home');
+
+  setViewMode(mode: 'home' | 'all-projects' | 'all-insights') {
+    this.viewMode.set(mode);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   selectedProject = signal<Project | null>(null);
 
   // Blog State
@@ -144,16 +152,21 @@ export class AppComponent implements OnInit {
   selectedCategory = signal<string>('All');
   
   blogCategories = computed(() => {
-    const allCats = this.blogs().map(b => b.category).filter(Boolean);
-    const unique = Array.from(new Set(allCats)).sort();
-    return ['All', ...unique];
+    const cats = this.resumeService.categories()
+      .filter(c => c.type === 'blog' && c.published)
+      .map(c => c.name);
+    return ['All', ...cats];
   });
 
   filteredBlogs = computed(() => {
-    if (this.selectedCategory() === 'All') {
-      return this.blogs();
+    let blogs = this.blogs();
+    if (this.selectedCategory() !== 'All') {
+      blogs = blogs.filter(b => b.category === this.selectedCategory());
     }
-    return this.blogs().filter(b => b.category === this.selectedCategory());
+    if (this.viewMode() === 'home') {
+      return blogs.slice(0, 6);
+    }
+    return blogs;
   });
 
   // Derived stats (Computed to allow animation of specific values)
@@ -172,11 +185,24 @@ export class AppComponent implements OnInit {
   fullText = "I turn data into insights and ideas into web experiences.";
   
   // Project Filtering
-  projectType = signal<'all' | 'web' | 'data'>('all');
+  projectType = signal<string>('All');
+  
+  projectCategories = computed(() => {
+    const cats = this.resumeService.categories()
+      .filter(c => c.type === 'project' && c.published)
+      .map(c => c.name);
+    return ['All', ...cats];
+  });
   
   filteredProjects = computed(() => {
-    if (this.projectType() === 'all') return this.projects();
-    return this.projects().filter(p => p.type === this.projectType());
+    let projects = this.projects();
+    if (this.projectType() !== 'All') {
+      projects = projects.filter(p => p.type === this.projectType());
+    }
+    if (this.viewMode() === 'home') {
+      return projects.slice(0, 6);
+    }
+    return projects;
   });
 
   // Contact Form
@@ -190,6 +216,9 @@ export class AppComponent implements OnInit {
   
   formStatus = signal<'idle' | 'sending' | 'success' | 'error'>('idle');
 
+  // Scroll to Top State
+  showScrollTop = signal(false);
+
   constructor() {
     // Listen for exit event from Admin component
     if (typeof window !== 'undefined') {
@@ -199,7 +228,16 @@ export class AppComponent implements OnInit {
       
       // Force Dark Mode
       document.documentElement.classList.add('dark');
+
+      // Scroll Listener
+      window.addEventListener('scroll', () => {
+        this.showScrollTop.set(window.scrollY > 300);
+      });
     }
+  }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   ngOnInit() {
@@ -234,7 +272,7 @@ export class AppComponent implements OnInit {
     type();
   }
 
-  setProjectType(type: 'all' | 'web' | 'data') {
+  setProjectType(type: string) {
     this.projectType.set(type);
   }
 
@@ -329,7 +367,12 @@ export class AppComponent implements OnInit {
 
   printResume() {
     if (typeof window !== 'undefined') {
-      window.print();
+      const link = document.createElement('a');
+      link.href = '/resume.pdf';
+      link.download = 'Jahidur_Rahman_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   }
 
