@@ -57,7 +57,8 @@
               "buildTarget": "jahidur-portfolio:build:production"
             },
             "development": {
-              "buildTarget": "jahidur-portfolio:build:development"
+              "buildTarget": "jahidur-portfolio:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "ng": "ng",
-    "dev": "npm run build && node server.ts",
+    "dev": "concurrently \"npm run server:dev\" \"ng serve --host 0.0.0.0 --port 3000\"",
+    "server:dev": "PORT=3001 node server.ts",
     "prestart": "npm run build",
     "start": "node server.ts",
     "build": "node node_modules/@angular/cli/bin/ng build",
@@ -15,24 +16,26 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@angular-devkit/build-angular": "^19.0.0",
     "@angular/animations": "^19.0.0",
+    "@angular/cli": "^19.0.0",
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
+    "@angular/compiler-cli": "^19.0.0",
     "@angular/core": "^19.0.0",
     "@angular/forms": "^19.0.0",
     "@angular/platform-browser": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^18.18.0",
     "express": "^5.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "@angular-devkit/build-angular": "^19.0.0",
-    "@angular/cli": "^19.0.0",
-    "@angular/compiler-cli": "^19.0.0",
-    "@types/express": "^5.0.6",
-    "@types/node": "^18.18.0",
     "typescript": "~5.6.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
   "engines": {
     "node": ">=18.13.0",
     "npm": ">=8.0.0"

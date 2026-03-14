@@ -1,7 +1,47 @@
 
 import { Component, signal, ChangeDetectionStrategy, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
+
+// Custom Validators
+function phoneNumberValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (!value) return null; // Required validator handles empty
+
+  // Remove spaces, dashes, parentheses for checking
+  const cleanValue = value.replace(/[\s\-()]/g, '');
+
+  // Check if it starts with + (International)
+  if (value.trim().startsWith('+')) {
+    // International format: + followed by 1-4 digit country code and 6-14 digits
+    // Total length 7-15 digits (excluding +)
+    const internationalRegex = /^\+\d{1,4}\d{6,14}$/;
+    if (!internationalRegex.test(cleanValue)) {
+      return { invalidInternationalPhone: true };
+    }
+  } else {
+    // Bangladeshi format: 01 followed by 3-9 and 8 digits
+    // Total 11 digits
+    const bdRegex = /^01[3-9]\d{8}$/;
+    if (!bdRegex.test(cleanValue)) {
+      return { invalidBdPhone: true };
+    }
+  }
+  return null;
+}
+
+function minWordsValidator(minWords: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+    
+    const wordCount = value.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
+    if (wordCount < minWords) {
+      return { minWords: { required: minWords, actual: wordCount } };
+    }
+    return null;
+  };
+}
 import { ResumeService } from './resume.service';
 import { AdminComponent } from './admin.component';
 import { Project, BlogPost, Message } from './app.models';
@@ -210,8 +250,8 @@ export class AppComponent implements OnInit {
   contactForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    phone: ['', Validators.required],
-    message: ['', Validators.required]
+    phone: ['', [Validators.required, phoneNumberValidator]],
+    message: ['', [Validators.required, minWordsValidator(3)]]
   });
   
   formStatus = signal<'idle' | 'sending' | 'success' | 'error'>('idle');

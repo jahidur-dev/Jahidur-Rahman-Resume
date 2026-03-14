@@ -1,53 +1,72 @@
 
 import { Injectable, signal, effect, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
 import { AppData, Profile, Experience, Education, Certification, SkillSet, Project, BlogPost, Message, Category } from './app.models';
-
-const STORAGE_KEY = 'jahidur_portfolio_data_v4'; 
 
 // Populate this with the FULL data so the site never loads blank
 const DEFAULT_DATA: AppData = {
   "profile": {
     "name": "Jahidur Rahman",
-    "title": "Manager of Analytics Team | Web Developer & Data Analyst",
-    "tagline": "I turn data into insights and ideas into web experiences.",
+    "title": "Analytics Manager | Expert in BI Tools, Excel, SQL & Python",
+    "tagline": "Proactive and results-driven Business Intelligence Analyst",
     "email": "jahidur.dev@gmail.com",
     "phone": "+880 1992 547279",
     "linkedin": "linkedin.com/in/jahidur-dev",
     "github": "jahidur-dev",
     "kaggle": "jahidur-dev",
     "location": "Dhaka, Bangladesh",
-    "summary": "Analytical and detail-oriented Data Analytics Professional with 5+ years of progressive experience at Chaldal PLC, growing from Jr. Data Analyst to Manager of Analytics. Expertise in SQL, statistical modeling, Python-based automation, and dashboard development, with a proven ability to transform raw data into actionable insights. Successfully led cross-functional analytics teams, developed demand prediction and purchase recommendation models, and implemented customer segmentation frameworks (RFMPA) to drive revenue growth and operational efficiency. Skilled at collaborating with both technical and non-technical departments to streamline processes, automate reporting, and enhance decision-making across supply chain, telesales, and profitability control.",
+    "summary": "Proactive and results-driven Business Intelligence Analyst with 5 + years of experience in data analytics, BI solutions, and cross-functional decision support. Skilled at transforming complex datasets into actionable insights that drive strategic and operational improvements. Proficient in SQL, Excel, and Python for building scalable dashboards, ETL pipelines, and automation solutions. Experienced in leading data system implementations, including enterprise-wide rollouts of Tally and other financial platforms, enhancing reporting accuracy and business visibility. Recognized for bridging technical and business functions, optimizing data processes, and delivering impactful insights to stakeholders. Strong leadership, problem-solving, and data storytelling skills with a focus on enabling data-driven business growth and operational excellence.",
     "currentlyLearning": "Advanced Deep Learning with PyTorch & System Design for Scalable Web Apps"
   },
   "experiences": [
     {
       "id": "1",
-      "role": "Manager of Analytics Team",
+      "role": "Analytics Manager",
       "company": "Chaldal PLC",
       "period": "Jul 2024 - Present",
       "description": [
-        "Deployed the Purchase Recommendation model to predict the purchase amount and high potential ROI product list simulating with multiple funds resistance both for regular sourcing and ASAP (10 minutes) sourcing.",
-        "Directed the analytics team, enhancing workflow and insights delivery.",
-        "Led demand prediction for Ramadan & Eid, supporting seasonal sales.",
-        "Conducted customer analysis for telesales and Premium Care teams to improve conversion."
+        "Implemented 45 dashboards across Superset, Excel, and Spreadsheets.",
+        "Reduced operational costs by 20% through statistical KPI insights and team collaboration.",
+        "Contributed to R&D of PK AI Assistant by delivering agent performance metrics and graphical solutions.",
+        "Led financial data integrity initiatives by overseeing Tally ERP systems, establishing cross-server data reconciliation protocols that synchronized live operations with accounting records to ensure 100% reporting reliability.",
+        "Implemented a Snowflake data model, reducing processing time by 50% and improving data accuracy.",
+        "Mentored 60+ Jr Analysts in Python, SQL, and BI tools, enhancing team performance.",
+        "Introduced real-time warehouse profitability dashboards and helped to close 7 high loss-making warehouses.",
+        "Implemented fraud detection model using Python, SQL, and advanced Excel, reduced fraud case by 85%."
       ],
-      "skills_used": ["Team Leadership", "Predictive Modeling", "Supply Chain Analytics", "Python"]
+      "skills_used": [
+        "Superset",
+        "Excel",
+        "Python",
+        "SQL",
+        "Snowflake",
+        "Tally ERP"
+      ]
     },
     {
       "id": "2",
-      "role": "Sr Data Analyst",
+      "role": "Sr. Data Analyst",
       "company": "Chaldal PLC",
       "period": "Nov 2021 - Jul 2024",
       "description": [
-        "Created reports and dashboards for product analysis, seasonal trends, retailer pricing, cost price analysis, and SKU brand scoring.",
-        "Guided Catalog & Profitability Control Room teams, improving workflows and automating repetitive tasks.",
-        "Enhanced banner & offer-block tracking, supporting supply chain and billing accuracy.",
-        "Conducted vendor scoring, stocking days analysis, abnormal sales tracking, and price change monitoring.",
-        "Designed customer segmentation/classification using RFMPA (Recency, Frequency, Monetary, Profit, Avg Basket Size)."
+        "Architected Snowflake-based ETL pipelines powering Operations analytics and reporting.",
+        "Developed comprehensive dashboards for product performance, seasonal trends, and retailer pricing strategies.",
+        "Implemented scheduled reporting for Ops and management via SSRS, integrated with our database.",
+        "Automated workflows for Pricing, Catalog, Profitability Control Room, & Analytic teams, reducing manual reporting hours by 40%.",
+        "Enhanced banner & offer-block tracking systems to ensure billing accuracy and supply chain synchronization.",
+        "Implemented vendor scoring and abnormal sales tracking algorithms to detect anomalies early, reduced fraud case by 20%.",
+        "Designed and deployed the RFMPA (Recency, Frequency, Monetary, Profit, Avg Basket) customer segmentation for enhance the customer targeting and convering ratio by 65%"
       ],
-      "skills_used": ["SQL", "Dashboarding", "RFMPA", "Process Automation"]
+      "skills_used": [
+        "Snowflake",
+        "ETL",
+        "SSRS",
+        "SQL",
+        "Python",
+        "RFMPA"
+      ]
     },
     {
       "id": "3",
@@ -55,12 +74,17 @@ const DEFAULT_DATA: AppData = {
       "company": "Chaldal PLC",
       "period": "Jun 2020 - Nov 2021",
       "description": [
-        "Designed and maintained dashboards and reports for multiple departments.",
-        "Conducted 17 SQL training batches across teams to strengthen company-wide data skills.",
-        "Supported corporate, telesales, HR, and customer service teams with data-driven process automation.",
-        "Built tools to collect, store, and generate reports for non-technical departments."
+        "Maintained critical operational dashboards for multiple business units like Ops, Marketing, Supply Chain, more",
+        "Conducted 17+ SQL training batches, upskilling non-technical teams across the company.",
+        "Built automated data pipelines to support corporate, HR, and customer service departments.",
+        "Created accessible reporting tools for non-technical stakeholders."
       ],
-      "skills_used": ["SQL", "Reporting", "Training", "Data Cleaning"]
+      "skills_used": [
+        "SQL",
+        "Reporting",
+        "Training",
+        "Data Pipelines"
+      ]
     },
     {
       "id": "4",
@@ -68,26 +92,38 @@ const DEFAULT_DATA: AppData = {
       "company": "ICT CARE",
       "period": "July 2019 - Jun 2020",
       "description": [
-        "Built client websites using HTML, CSS, Bootstrap, JavaScript, PHP, and WordPress.",
-        "Customized WordPress themes and implemented responsive design for better UX."
+        "Developed responsive client websites using the LAMP stack and WordPress.",
+        "Customized themes and optimized frontend performance for better user experience."
       ],
-      "skills_used": ["HTML/CSS", "PHP", "JavaScript", "WordPress"]
-    },
+      "skills_used": [
+        "HTML/CSS",
+        "PHP",
+        "JavaScript",
+        "WordPress"
+      ]
+    }
   ],
   "education": [
     {
       "id": "1",
-      "institution": "Jessore Polytechnic Institute, Jashore",
-      "degree": "Diploma in Computer Engineering",
-      "period": "Jul 2016 - Jun 2020",
-      "details": "Computer Technology | GPA 3.53 Out of 4.00"
+      "institution": "Northern University of Business and Technology",
+      "degree": "Bachelor of Science in Computer Engineering",
+      "period": "2025 - Present",
+      "details": "Khulna, Bangladesh"
     },
     {
       "id": "2",
-      "institution": "Naldanga Bhushan Pilot High School, Kaligonj Jhenaidah",
-      "degree": "Secondary School Certificate (SSC)",
-      "period": "2016",
-      "details": "Business Studies | GPA 4.72 Out of 5.00"
+      "institution": "Jessore Polytechnic Institute",
+      "degree": "Diploma in Computer Engineering",
+      "period": "2016 - 2020",
+      "details": "Jashore, Bangladesh"
+    },
+    {
+      "id": "3",
+      "institution": "Naldanga Bhushan Pilot High School",
+      "degree": "Secondary School Certificate (Business Studies)",
+      "period": "2011 - 2016",
+      "details": "Kaligonj Jhenaidah, Bangladesh"
     }
   ],
   "certifications": [
@@ -95,193 +131,261 @@ const DEFAULT_DATA: AppData = {
       "id": "1",
       "name": "Web Design & Development",
       "issuer": "ICT Care, Jashore",
-      "period": "Jan 2019 - Jun 2019",
-      "details": "Strong grasp of HTML, CSS, Bootstrap, and JavaScript for web design. Proficient in crafting responsive layouts, ensuring optimal user experience. Expertise in content structuring, styling, and dynamic functionality implementation. PHP, jquery for web development."
+      "period": "",
+      "details": "Comprehensive training in full-stack web technologies including HTML, CSS, Bootstrap, PHP, and JavaScript."
     }
   ],
   "skills": {
     "development": {
-      "frontend": ["HTML", "CSS", "JavaScript", "Bootstrap", "WordPress"],
-      "backend": ["PHP", "MySQL"],
-      "tools": ["Git", "VS Code"]
+      "frontend": [
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "jQuery",
+        "Wordpress"
+      ],
+      "backend": [
+        "PHP",
+        "Node.js"
+      ],
+      "tools": [
+        "Git",
+        "VS Code"
+      ]
     },
     "data": {
-      "languages": ["SQL (Advanced)", "Python (Basic, with automation & analytics)"],
-      "visualization": ["Dashboarding & Data Visualization", "Microsoft Office"],
-      "analysis": ["Statistical Analysis", "Predictive Modeling & Forecasting", "Customer Segmentation & Classification", "Process Automation & Optimization", "Data-Driven Decision Support"]
+      "languages": [
+        "T-SQL",
+        "Python",
+        "Azure KQL",
+        "My SQL",
+        "Json Parse"
+      ],
+      "visualization": [
+        "Superset",
+        "Data Visualization",
+        "Google Spreadsheet",
+        "MS Excel"
+      ],
+      "analysis": [
+        "Snowflake",
+        "Tally ERP",
+        "Prediction & Projection",
+        "Statistics",
+        "Database Management"
+      ]
     }
   },
   "projects": [
     {
       "id": "p1",
-      "title": "Dynamic Purchase Prediction Model",
-      "type": "Data Analytics",
-      "description": "A machine learning model designed to predict daily inventory needs for 10-minute delivery hubs.",
-      "technologies": ["Python", "Scikit-Learn", "SQL", "Prophet"],
-      "link": "#",
-      "repoLink": "https://github.com/jahidur-dev/purchase-prediction",
-      "imageUrl": "https://picsum.photos/600/400?random=1",
-      "role": "Lead Data Scientist",
-      "challenge": "The company faced excessive waste (15%) and frequent stockouts due to a static, manual ordering process that failed to account for daily demand fluctuations.",
-      "solution": "Developed a time-series forecasting model (Facebook Prophet) incorporating seasonality, holidays, and weather data to automate replenishment orders for hundreds of SKUs.",
-      "results": [
-        "Reduced perishable waste by 15% within 3 months",
-        "Lowered stockout rates by 20%, improving customer satisfaction",
-        "Automated 90% of daily ordering, freeing up 20+ hours/week for the supply chain team"
+      "title": "Leadership & Strategy",
+      "type": "Leadership",
+      "description": "Led Analytics, Pricing, Monitoring, and Ops Control teams. Built the Profitability Control Team and improved operations. Developed Warehouse Profitability Report for P&L analysis. Enhanced Access Control Lists and data security protocols.",
+      "technologies": [
+        "Leadership",
+        "Strategy",
+        "Operations"
       ],
-      "datasetDetails": "Historical sales data (2 years), Weather API data, Holiday calendar",
-      "techniquesUsed": ["Time Series Forecasting", "Regression", "Data Cleaning"]
+      "link": "#",
+      "repoLink": "",
+      "imageUrl": "https://picsum.photos/600/400?random=1",
+      "role": "Analytics Manager",
+      "challenge": "Needed to optimize operations and profitability across multiple teams and warehouses.",
+      "solution": "Built dedicated control teams and developed comprehensive profitability reports.",
+      "results": [
+        "Improved operations across Pricing, Monitoring, and Ops Control",
+        "Enhanced data security protocols"
+      ],
+      "datasetDetails": "",
+      "techniquesUsed": [
+        "Team Building",
+        "P&L Analysis"
+      ]
     },
     {
       "id": "p2",
-      "title": "RFMPA Customer Segmentation Engine",
+      "title": "Process & System Improvements",
       "type": "Data Analytics",
-      "description": "A high-impact customer clustering framework analyzing 1M+ user behaviors to drive hyper-personalized marketing and retention strategies.",
-      "technologies": ["SQL", "PowerBI", "Python", "Statistics"],
-      "link": "#",
-      "imageUrl": "https://picsum.photos/600/400?random=2",
-      "role": "Senior Data Analyst",
-      "challenge": "Marketing efforts were inefficient due to a 'one-size-fits-all' approach. With 1M+ users treated as a monolith, campaign engagement was low, and high-value churn was going undetected.",
-      "solution": "Engineered a comprehensive RFMPA (Recency, Frequency, Monetary, Profitability, Avg Basket) model using SQL and Python. This segmented the user base into actionable clusters such as \"Champions\", \"Hibernating\", and \"Bargain Hunters\", enabling precise targeting.",
-      "results": [
-        "Achieved a 25% increase in campaign conversion rates via personalized targeting",
-        "Reactivated 5,000+ dormant high-value customers, generating significant incremental revenue",
-        "Reduced discount spend by 15% by suppressing offers to price-insensitive segments"
+      "description": "Implemented Tally accounting system across the organization. Built ETL processes using Snowflake. Created Concentration Score Model for better inventory management. Automated financial insights through new accounting software.",
+      "technologies": [
+        "Tally ERP",
+        "Snowflake",
+        "ETL"
       ],
-      "datasetDetails": "1M+ Customer Transaction Records",
-      "techniquesUsed": ["Clustering (K-Means)", "RFM Analysis", "SQL Window Functions"]
+      "link": "#",
+      "repoLink": "",
+      "imageUrl": "https://picsum.photos/600/400?random=2",
+      "role": "Data Analyst",
+      "challenge": "Manual financial and inventory processes were inefficient and error-prone.",
+      "solution": "Implemented enterprise-wide Tally system and automated ETL pipelines via Snowflake.",
+      "results": [
+        "Automated financial insights",
+        "Improved inventory management via Concentration Score Model"
+      ],
+      "datasetDetails": "",
+      "techniquesUsed": [
+        "ETL",
+        "System Implementation"
+      ]
     },
     {
       "id": "p3",
-      "title": "Automated Vendor Performance System",
-      "type": "Data Analytics",
-      "description": "An automated, data-driven evaluation system transforming procurement by ranking 500+ vendors on real-time operational KPIs.",
-      "technologies": ["SQL", "Python", "Airflow", "Data Warehousing"],
-      "link": "#",
-      "imageUrl": "https://picsum.photos/600/400?random=3",
-      "role": "Data Analyst",
-      "challenge": "The procurement department lacked visibility into supplier performance, leading to reliance on gut feeling, frequent stockouts, and an inability to negotiate better terms with underperforming vendors.",
-      "solution": "Built a robust ETL pipeline (Airflow & SQL) to calculate daily vendor scores based on Fill Rate, Delivery Speed, Price Stability, and Quality. Created live dashboards to flag non-compliant vendors immediately.",
-      "results": [
-        "Drove overall vendor fill rates from 82% to 94%, ensuring consistent product availability",
-        "Empowered the commercial team to negotiate 3% cost savings by leveraging performance data",
-        "Reduced manual vendor assessment time by 90%, allowing buyers to focus on strategic sourcing"
+      "title": "Training & Mentorship",
+      "type": "Leadership",
+      "description": "Trained 70 team members on SQL & Excel. Conducted SQL exams to manage server access. Trained 12 team members on Analytics with Python. Trained 7 members on Web Development with raw PHP.",
+      "technologies": [
+        "SQL",
+        "Excel",
+        "Python",
+        "PHP"
       ],
-      "datasetDetails": "Vendor Delivery Logs, Quality Check Reports",
-      "techniquesUsed": ["ETL Pipeline", "Data Warehousing", "Automated Reporting"]
+      "link": "#",
+      "repoLink": "",
+      "imageUrl": "https://picsum.photos/600/400?random=3",
+      "role": "Mentor",
+      "challenge": "Non-technical teams lacked data skills to perform their roles efficiently.",
+      "solution": "Developed and conducted comprehensive training programs across the company.",
+      "results": [
+        "Upskilled 80+ employees in data and web technologies",
+        "Streamlined server access management"
+      ],
+      "datasetDetails": "",
+      "techniquesUsed": [
+        "Training",
+        "Mentorship"
+      ]
     },
     {
       "id": "p4",
-      "title": "E-Commerce Analytics Dashboard",
-      "type": "Web Development",
-      "description": "A full-stack analytics dashboard for e-commerce store owners to visualize sales, traffic, and user behavior.",
-      "technologies": ["Angular", "Node.js", "Chart.js", "Tailwind CSS"],
-      "link": "#",
-      "repoLink": "https://github.com/jahidur-dev/ecommerce-dashboard",
-      "imageUrl": "https://picsum.photos/600/400?random=4",
-      "role": "Full Stack Developer",
-      "challenge": "Store owners needed a real-time view of their business metrics without navigating complex database tools.",
-      "solution": "Built a responsive dashboard using Angular and Chart.js, fetching data from a Node.js API. Implemented JWT authentication for security.",
-      "results": ["Enabled real-time decision making for 50+ store owners."]
-    },
-    {
-      "id": "p5",
-      "title": "Sales Forecasting Tool",
+      "title": "Data & Decision Support",
       "type": "Data Analytics",
-      "description": "An automated tool for predicting monthly sales figures using historical data and seasonal trends.",
-      "technologies": ["Python", "Pandas", "Matplotlib", "Flask"],
+      "description": "Integrated cross-team insights into strategic planning. Developed fraud detection systems. Verified pricing through local market analysis and improved margin by 3%. Developed a demand prediction model to minimize overstock and optimize cost management.",
+      "technologies": [
+        "Python",
+        "SQL",
+        "Predictive Modeling"
+      ],
       "link": "#",
-      "repoLink": "https://github.com/jahidur-dev/sales-forecasting",
-      "imageUrl": "https://picsum.photos/600/400?random=5",
-      "role": "Data Scientist",
-      "challenge": "Manual sales forecasting was time-consuming and prone to human error.",
-      "solution": "Developed a Python-based tool that ingests historical sales data and outputs forecasts using statistical models, served via a Flask API.",
-      "results": ["Improved forecast accuracy by 15%", "Reduced manual effort by 10 hours/month"]
-    },
-    {
-      "id": "p6",
-      "title": "Portfolio Website V1",
-      "type": "Web Development",
-      "description": "The first iteration of my personal portfolio website, showcasing my early work and skills.",
-      "technologies": ["HTML", "CSS", "JavaScript", "jQuery"],
-      "link": "#",
-      "repoLink": "https://github.com/jahidur-dev/portfolio-v1",
-      "imageUrl": "https://picsum.photos/600/400?random=6",
-      "role": "Frontend Developer",
-      "challenge": "Needed a professional online presence to showcase my projects and resume.",
-      "solution": "Designed and built a responsive single-page portfolio using standard web technologies.",
-      "results": ["Secured first internship via this portfolio"]
+      "repoLink": "",
+      "imageUrl": "https://picsum.photos/600/400?random=4",
+      "role": "Data Analyst",
+      "challenge": "Needed to reduce fraud, optimize pricing, and minimize overstock.",
+      "solution": "Built fraud detection and demand prediction models, and conducted local market pricing analysis.",
+      "results": [
+        "Improved margin by 3%",
+        "Minimized overstock and optimized cost management",
+        "Reduced fraud cases significantly"
+      ],
+      "datasetDetails": "",
+      "techniquesUsed": [
+        "Fraud Detection",
+        "Demand Prediction",
+        "Market Analysis"
+      ]
     }
   ],
   "blogs": [
     {
       "id": "b1",
-      "title": "Why SQL is Still King in the Age of AI",
-      "category": "Technical",
-      "date": "Nov 15, 2024",
+      "title": "The Evolution of Data Analytics in E-Commerce",
+      "category": "Data Analytics",
+      "date": "2024-01-15",
       "readTime": "5 min read",
-      "imageUrl": "https://picsum.photos/600/400?random=10",
-      "excerpt": "Despite the rise of LLMs and advanced ORMs, raw SQL remains the backbone of high-performance data analytics. Here is why.",
-      "content": "In the rapidly evolving landscape of data science, new tools emerge daily. However, Structured Query Language (SQL) has remained a constant force since the 1970s. \n\nWhy? Because data lives in relational databases. \n\nWhile AI can generate queries, understanding the underlying logic of joins, window functions, and CTEs is crucial for optimization. In this post, I explore how modern analysts can leverage SQL alongside AI tools to maximize efficiency rather than replacing it."
+      "imageUrl": "https://picsum.photos/800/400?random=11",
+      "excerpt": "Exploring how modern data stacks like Snowflake and Superset are transforming the way e-commerce businesses make decisions.",
+      "content": "Data analytics has moved from static reporting to real-time, predictive insights. In the fast-paced e-commerce sector, the ability to instantly track inventory, monitor profitability, and understand customer behavior is no longer a luxury—it's a necessity. By leveraging cloud data warehouses like Snowflake and open-source visualization tools like Apache Superset, organizations can democratize data access, empowering non-technical teams to make data-driven decisions on the fly."
     },
     {
       "id": "b2",
-      "title": "Optimizing Supply Chains with Predictive Analytics",
-      "category": "Case Study",
-      "date": "Oct 02, 2024",
+      "title": "Building Effective ETL Pipelines with Python",
+      "category": "Technical",
+      "date": "2023-11-22",
       "readTime": "8 min read",
-      "imageUrl": "https://picsum.photos/600/400?random=11",
-      "excerpt": "A deep dive into how we reduced perishable waste by 15% using time-series forecasting models.",
-      "content": "Supply chain management in the grocery sector is a race against time. Perishable goods have a limited shelf life, and overstocking leads to direct financial loss. \n\nWe implemented a Facebook Prophet model to account for seasonality and local holidays. By feeding historical sales data combined with weather APIs, we were able to predict demand with 85% accuracy. This shift from reactive to predictive ordering saved the company significant revenue in Q3."
+      "imageUrl": "https://picsum.photos/800/400?random=12",
+      "excerpt": "A deep dive into constructing robust, scalable ETL pipelines using Python and SQL to ensure data integrity.",
+      "content": "Extract, Transform, Load (ETL) pipelines are the backbone of any data-driven organization. When building these pipelines, Python offers unparalleled flexibility. Using libraries like Pandas and SQLAlchemy, analysts can extract data from disparate sources, clean and transform it to meet business logic, and load it into a centralized warehouse. The key to a successful ETL pipeline lies in robust error handling, comprehensive logging, and ensuring data quality at every step of the process."
     },
     {
       "id": "b3",
-      "title": "Leading Cross-Functional Data Teams",
-      "category": "Leadership",
-      "date": "Sep 20, 2024",
-      "readTime": "4 min read",
-      "imageUrl": "https://picsum.photos/600/400?random=12",
-      "excerpt": "Moving from an individual contributor to a manager requires a shift in mindset. Here are my top 3 learnings.",
-      "content": "The transition from writing code to managing people who write code is challenging. \n\n1. Delegate, don't dictate: Trust your team to find the solution. \n2. Focus on the \"Why\": Engineers need to know the business impact of their work. \n3. Shield the team: Protect them from shifting priorities so they can focus on deep work.\n\nThese three pillars have helped me build a high-performing analytics unit."
+      "title": "Mastering RFMPA for Customer Segmentation",
+      "category": "Case Study",
+      "date": "2023-09-10",
+      "readTime": "6 min read",
+      "imageUrl": "https://picsum.photos/800/400?random=13",
+      "excerpt": "How extending the traditional RFM model to include Profitability and Average Basket size can supercharge your marketing ROI.",
+      "content": "Traditional RFM (Recency, Frequency, Monetary) analysis is a powerful tool for customer segmentation. However, in low-margin industries like grocery delivery, it's crucial to factor in Profitability and Average Basket size (RFMPA). By clustering customers based on these five dimensions, marketing teams can tailor their campaigns more effectively, targeting high-value segments with personalized offers while optimizing acquisition costs for lower-tier segments."
     },
     {
       "id": "b4",
-      "title": "The Art of Data Storytelling",
-      "category": "Technical",
-      "date": "Aug 10, 2024",
-      "readTime": "6 min read",
-      "imageUrl": "https://picsum.photos/600/400?random=13",
-      "excerpt": "Data without context is just noise. Learn how to craft compelling narratives that drive action.",
-      "content": "Dashboards are great, but stories change minds. In this article, I discuss the importance of context, visualization choice, and narrative structure in data presentation."
+      "title": "Bridging the Gap Between Tech and Business",
+      "category": "Leadership",
+      "date": "2023-06-05",
+      "readTime": "4 min read",
+      "imageUrl": "https://picsum.photos/800/400?random=14",
+      "excerpt": "Strategies for effectively communicating complex data insights to non-technical stakeholders and driving organizational change.",
+      "content": "As a data professional, your analysis is only as good as your ability to communicate it. Bridging the gap between technical complexity and business strategy requires empathy, clear storytelling, and a focus on actionable outcomes. Instead of presenting raw numbers or complex models, focus on the 'so what?'—how does this data impact the bottom line, and what specific actions should the business take as a result?"
     },
     {
       "id": "b5",
-      "title": "Building Scalable Angular Apps",
-      "category": "Technical",
-      "date": "Jul 05, 2024",
+      "title": "Detecting Fraud with Statistical Modeling",
+      "category": "Data Analytics",
+      "date": "2023-03-18",
       "readTime": "7 min read",
-      "imageUrl": "https://picsum.photos/600/400?random=14",
-      "excerpt": "Best practices for structuring large Angular applications for maintainability and performance.",
-      "content": "As Angular applications grow, state management and module structure become critical. I share my experience with Signals, standalone components, and lazy loading."
+      "imageUrl": "https://picsum.photos/800/400?random=15",
+      "excerpt": "An overview of how statistical models and anomaly detection algorithms can safeguard your business against fraudulent transactions.",
+      "content": "Fraud detection is a constant cat-and-mouse game. By implementing statistical models that analyze historical transaction data, businesses can identify abnormal patterns and flag potential fraud in real-time. Techniques such as vendor scoring, standard deviation analysis on pricing, and tracking unusual purchase frequencies are highly effective in mitigating risk and protecting revenue."
     },
     {
       "id": "b6",
-      "title": "From Junior to Manager: A Journey",
-      "category": "Leadership",
-      "date": "Jun 15, 2024",
+      "title": "Optimizing Web Performance for Better UX",
+      "category": "Web Development",
+      "date": "2022-12-01",
       "readTime": "5 min read",
-      "imageUrl": "https://picsum.photos/600/400?random=15",
-      "excerpt": "Reflecting on my 5-year journey at Chaldal PLC and the lessons learned along the way.",
-      "content": "Growth is never linear. From my first SQL query to leading a team of analysts, here are the key milestones and mentors that shaped my career path."
+      "imageUrl": "https://picsum.photos/800/400?random=16",
+      "excerpt": "Key frontend optimization techniques to improve page load speeds, enhance user experience, and boost SEO rankings.",
+      "content": "In today's digital landscape, a slow website can severely impact user retention and conversion rates. Optimizing frontend performance involves a combination of techniques: minifying CSS and JavaScript, leveraging browser caching, optimizing images, and reducing server response times. By prioritizing these optimizations, developers can create fast, responsive web applications that delight users and rank higher in search engine results."
     }
   ],
+  "messages": [],
   "categories": [
-    { id: 'c1', name: 'Web Development', slug: 'web-development', type: 'project', published: true },
-    { id: 'c2', name: 'Data Analytics', slug: 'data-analytics', type: 'project', published: true },
-    { id: 'c3', name: 'Technical', slug: 'technical', type: 'blog', published: true },
-    { id: 'c4', name: 'Case Study', slug: 'case-study', type: 'blog', published: true },
-    { id: 'c5', name: 'Leadership', slug: 'leadership', type: 'blog', published: true }
-  ]
+    {
+      "id": "c1",
+      "name": "Web Development",
+      "slug": "web-development",
+      "type": "project",
+      "published": true
+    },
+    {
+      "id": "c2",
+      "name": "Data Analytics",
+      "slug": "data-analytics",
+      "type": "project",
+      "published": true
+    },
+    {
+      "id": "c5",
+      "name": "Leadership",
+      "slug": "leadership",
+      "type": "project",
+      "published": true
+    },
+    {
+      "id": "c3",
+      "name": "Technical",
+      "slug": "technical",
+      "type": "blog",
+      "published": true
+    },
+    {
+      "id": "c4",
+      "name": "Case Study",
+      "slug": "case-study",
+      "type": "blog",
+      "published": true
+    }
+  ],
+  "AdminPassword": "admin" // Default password
 };
 @Injectable({ providedIn: 'root' })
 export class ResumeService {
@@ -297,15 +401,18 @@ export class ResumeService {
   blogs = signal<BlogPost[]>(DEFAULT_DATA.blogs);
   messages = signal<Message[]>(DEFAULT_DATA.messages || []);
   categories = signal<Category[]>(DEFAULT_DATA.categories || []);
+  adminPassword = signal<string>(DEFAULT_DATA.AdminPassword || 'admin');
 
   // Computed signals for backward compatibility
   projectCategories = computed(() => this.categories().filter(c => c.type === 'project').map(c => c.name));
   blogCategories = computed(() => this.categories().filter(c => c.type === 'blog').map(c => c.name));
 
+  private saveTimeout: any;
+
   constructor() {
     this.loadData();
     
-    // Auto-save whenever any signal changes (local storage sync)
+    // Auto-save whenever any signal changes (sync to server)
     effect(() => {
       const data: AppData = {
         profile: this.profile(),
@@ -316,47 +423,44 @@ export class ResumeService {
         projects: this.projects(),
         blogs: this.blogs(),
         messages: this.messages(),
-        categories: this.categories()
+        categories: this.categories(),
+        AdminPassword: this.adminPassword()
       };
       
-      // Guard for non-browser environments
-      if (typeof localStorage === 'undefined') return;
+      // Guard for non-browser environments or empty initial state
+      if (typeof window === 'undefined' || data.profile.name === '') return;
 
-      // Only save if we have meaningful data (avoids overwriting storage with empty initial state)
-      if (data.profile.name === '') return;
-
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      } catch (e) {
-        console.error('Error saving to localStorage', e);
-      }
+      // Debounce save (wait for 1s of silence before saving)
+      if (this.saveTimeout) clearTimeout(this.saveTimeout);
+      
+      this.saveTimeout = setTimeout(() => {
+        this.http.post('/api/data', data).pipe(
+          retry({ count: 3, delay: 1000 }),
+          catchError(err => {
+            console.error('Error saving data to server', err);
+            return throwError(() => err);
+          })
+        ).subscribe({
+          next: () => console.log('Data saved successfully'),
+          error: (err) => console.error('Final error saving data', err)
+        });
+      }, 1000);
     });
   }
 
   private loadData() {
-    // 1. Try Local Storage first (Edited data takes precedence)
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          const data = JSON.parse(stored) as AppData;
-          this.setState(data);
-          return;
-        }
-      } catch (e) {
-        console.error('Error loading from localStorage', e);
-      }
-    }
-
-    // 2. Fallback to JSON Database file
-    // Use ./data.json (relative) to handle subdirectory deployments better
-    this.http.get<AppData>('./data.json').subscribe({
+    // 1. Try to load from Server API first (Source of Truth)
+    this.http.get<AppData>('/api/data').subscribe({
       next: (data) => {
         this.setState(data);
       },
       error: (err) => {
-        console.error('Failed to load data.json, falling back to default data', err);
-        // We already have DEFAULT_DATA set in the signals, so no action needed.
+        console.error('Failed to load data from API, falling back to static file', err);
+        // 2. Fallback to static JSON file if API fails
+        this.http.get<AppData>('./data.json').subscribe({
+          next: (data) => this.setState(data),
+          error: (e) => console.error('Failed to load static data.json', e)
+        });
       }
     });
   }
@@ -377,6 +481,8 @@ export class ResumeService {
     this.projects.set(data.projects || []);
     this.blogs.set(data.blogs || []);
     this.messages.set(data.messages || []);
+    // Check for both AdminPassword (new) and adminPassword (old)
+    this.adminPassword.set(data.AdminPassword || (data as any).adminPassword || 'admin');
     
     // Handle categories migration
     if (data.categories) {
@@ -483,5 +589,9 @@ export class ResumeService {
 
   markMessageAsRead(id: string) {
     this.messages.update(list => list.map(m => m.id === id ? { ...m, read: true } : m));
+  }
+
+  updateAdminPassword(newPassword: string) {
+    this.adminPassword.set(newPassword);
   }
 }

@@ -757,8 +757,7 @@ export class AdminComponent {
 
   login(e: Event) {
     e.preventDefault();
-    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('portfolio_password') : null;
-    const validPass = stored || 'admin';
+    const validPass = this.resumeService.adminPassword();
     if (this.passwordInput === validPass) {
       this.isAuthenticated.set(true);
       this.loginError.set(false);
@@ -893,7 +892,7 @@ export class AdminComponent {
 
   // Profile
   saveProfile() {
-    this.resumeService.updateProfile(this.localProfile);
+    this.resumeService.updateProfile({ ...this.localProfile });
     alert('Profile updated successfully!');
   }
 
@@ -1037,15 +1036,26 @@ export class AdminComponent {
   // Password
   currentPass = ''; newPass = ''; confirmPass = ''; passMsg = ''; passError = false;
   changePassword() {
-    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem('portfolio_password') : null;
-    const validPass = stored || 'admin';
+    const validPass = this.resumeService.adminPassword();
     this.passMsg = '';
     
-    if (this.currentPass !== validPass) { this.passMsg = 'Current password incorrect'; this.passError = true; return; }
-    if (this.newPass !== this.confirmPass) { this.passMsg = 'New passwords do not match'; this.passError = true; return; }
-    if (!this.newPass) { this.passMsg = 'Password cannot be empty'; this.passError = true; return; }
+    if (this.currentPass !== validPass) { 
+      this.passMsg = 'Current password incorrect'; 
+      this.passError = true; 
+      return; 
+    }
+    if (this.newPass !== this.confirmPass) { 
+      this.passMsg = 'New passwords do not match'; 
+      this.passError = true; 
+      return; 
+    }
+    if (!this.newPass) { 
+      this.passMsg = 'Password cannot be empty'; 
+      this.passError = true; 
+      return; 
+    }
     
-    if (typeof localStorage !== 'undefined') localStorage.setItem('portfolio_password', this.newPass);
+    this.resumeService.updateAdminPassword(this.newPass);
     this.passMsg = 'Password updated successfully';
     this.passError = false;
     this.currentPass = ''; this.newPass = ''; this.confirmPass = '';

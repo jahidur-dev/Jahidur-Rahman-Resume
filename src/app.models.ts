@@ -110,6 +110,7 @@ export interface AppData {
   blogs: BlogPost[];
   messages?: Message[];
   categories?: Category[];
+  AdminPassword?: string; // Capitalized as requested
   // Deprecated but kept for migration if needed, though we will try to use categories
   projectCategories?: string[]; 
   blogCategories?: string[];

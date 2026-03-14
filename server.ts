@@ -10,7 +10,8 @@ const app = express();
 const port = process.env['PORT'] || 3000;
 
 // Increase payload limit for file uploads
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Serve static files from the dist directory
 const distDir = join(__dirname, 'dist/jahidur-portfolio/browser');
@@ -21,6 +22,49 @@ if (fs.existsSync(distDir)) {
 } else {
   console.warn(`Warning: Dist directory ${distDir} does not exist. Build the app first.`);
 }
+
+// Data Persistence Endpoints
+app.get('/api/data', (req, res) => {
+  const dataPath = join(publicDir, 'data.json');
+  if (fs.existsSync(dataPath)) {
+    res.sendFile(dataPath);
+  } else {
+    // Fallback to dist if public doesn't exist yet
+    const distDataPath = join(distDir, 'data.json');
+    if (fs.existsSync(distDataPath)) {
+        res.sendFile(distDataPath);
+    } else {
+        res.status(404).json({ error: 'Data not found' });
+    }
+  }
+});
+
+app.post('/api/data', (req, res) => {
+  const data = req.body;
+  if (!data) {
+    return res.status(400).json({ error: 'No data provided' });
+  }
+
+  try {
+    const jsonString = JSON.stringify(data, null, 2);
+    
+    // Save to public/data.json (Persistence)
+    if (!fs.existsSync(publicDir)) {
+        try { fs.mkdirSync(publicDir); } catch(e) {}
+    }
+    fs.writeFileSync(join(publicDir, 'data.json'), jsonString);
+
+    // Save to dist/data.json (Immediate Update)
+    if (fs.existsSync(distDir)) {
+        fs.writeFileSync(join(distDir, 'data.json'), jsonString);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error saving data:', err);
+    res.status(500).json({ error: 'Failed to save data' });
+  }
+});
 
 // Resume Upload Endpoint
 app.post('/api/upload-resume', (req, res) => {
