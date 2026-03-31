@@ -6,8 +6,10 @@
   "main": "server.js",
   "scripts": {
     "ng": "ng",
+    "predev": "node generate-apps.js",
     "dev": "concurrently \"npm run server:dev\" \"ng serve --host 0.0.0.0 --port 3000\"",
     "server:dev": "PORT=3001 node server.ts",
+    "prebuild": "node generate-apps.js",
     "prestart": "npm run build",
     "start": "node server.ts",
     "build": "node node_modules/@angular/cli/bin/ng build",

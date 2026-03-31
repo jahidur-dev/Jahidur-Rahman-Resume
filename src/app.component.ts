@@ -280,7 +280,14 @@ export class AppComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // Apps State
+  apps = signal<{name: string, url: string}[]>([]);
+  appsError = signal<string | null>(null);
+
   ngOnInit() {
+    // Fetch apps list
+    this.refreshApps();
+
     // Welcome Animation Sequence
     setTimeout(() => {
       this.fadeOutWelcome.set(true);
@@ -363,6 +370,9 @@ export class AppComponent implements OnInit {
   }
 
   scrollToSection(sectionId: string) {
+    if (sectionId === 'apps') {
+      this.refreshApps();
+    }
     // Close mobile menu if open
     this.closeMobileMenu();
 
@@ -379,6 +389,31 @@ export class AppComponent implements OnInit {
         });
       }
     }, 100);
+  }
+
+  refreshApps() {
+    this.resumeService.http.get<any>('/apps.json').subscribe({
+      next: (appNames) => {
+        if (Array.isArray(appNames)) {
+          this.apps.set(appNames.map((name: string) => ({
+            name: name.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
+            url: `./apps/${name}`
+          })));
+          this.appsError.set(null);
+        } else {
+          this.appsError.set('API returned non-array: ' + JSON.stringify(appNames).substring(0, 100));
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load apps', err);
+        // Fallback to hardcoded demo-app if apps.json fails
+        this.apps.set([{
+          name: 'Demo App',
+          url: './apps/demo-app'
+        }]);
+        this.appsError.set(null); // Hide error on fallback
+      }
+    });
   }
 
   openProject(project: Project) {
